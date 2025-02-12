@@ -1,4 +1,5 @@
 # Episode 5: Dictionaries (Mappings)
+from copy import deepcopy
 
 def main():
 
@@ -82,13 +83,37 @@ def main():
     d.clear()
     print(f'{d=}')
 
-    # 10. Copying a dictionary
+    # 10. Shallow Copying a dictionary
     print("\nCopying a dictionary.")
     print("d = {\"a\": 1, \"b\": 2, \"c\": 3}")
     print("d2 = d.copy()")
     d = {"a": 1, "b": 2, "c": 3}
     d2 = d.copy()
     print(f'{d2=}')
+    d2["d"] = 4
+    print(f'{d=}')
+    print(f'{d2=}')
+    print("This is a shallow copy so they are independent of each other if not nested.")
+
+    # 11. Deep Copy for Nested Dictionary
+    print("\nDeep Copying a dictionary.")
+    print("d = {\"a\": {\"b\": 1, \"c\": 2}, \"d\": {\"e\": 3, \"f\": 4}}")
+    print("d2 = deepcopy(d)")
+    d = {"a": {"b": 1, "c": 2}, "d": {"e": 3, "f": 4}}
+    d2 = deepcopy(d)
+    d3 = d.copy()
+
+    print(f'\nStarting {d=}')
+    print(f'Starting {d2=}')
+    print(f'Starting {d3=}')
+
+    print(f'\nChanging D with: d["a"]["b"] = 5')
+    d["a"]["b"] = 5
+    print(f'{d=}')
+    print(f'{d2=}')
+    print(f'{d3=}')
+    print("The deep copy allows for true copying of dictionary so no more relationships exist between them.")
+    
 
     # 11. Merging two dictionaries
     print("\nMerging two dictionaries.")
@@ -96,7 +121,7 @@ def main():
     print("d2 = {\"d\": 4, \"e\": 5, \"f\": 6}")
     print("d.update(d2)")
     d = {"a": 1, "b": 2, "c": 3}
-    d2 = {"d": 4, "e": 5, "f": 6}
+    d2 = {"a": 5, "d": 4, "e": 5, "f": 6} # a is overwritten
     d.update(d2)
     print(f'{d=}')
 

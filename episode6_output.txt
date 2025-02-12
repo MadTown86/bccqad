@@ -1,0 +1,4 @@
+Hello, World!
+My name is GrovesDaMan.
+I am a Python programmer.
+I am trying to teach so I can better learn myself.

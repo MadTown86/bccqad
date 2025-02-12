@@ -17,7 +17,7 @@ def main():
     # Note that the \n is used to create two new lines in the output, this is called an 'escape character'
 
     l = [1, 2, 3, 4, 5]
-    print("l starts off equal to: ", l)
+    print("l starts off equal to: \n", l)
     # Accessing elements in a list
     print("l[0] = ", l[0])
     print("l[1] = ", l[1])
@@ -27,8 +27,8 @@ def main():
     # So if there are five elements, the last item will be at index of 4
 
     # You can also access elements from the end of the list
-    print("We can access elements with negative index values, -1 is always the last item: l[-1] = ", l[-1])
-    print("Accessing negative index values starts incrementing towards the first element: l[-2] = ", l[-2])
+    print("We can access elements with negative index values, -1 is always the last item: l[-1] = \n", l[-1])
+    print("Accessing negative index values starts incrementing towards the first element: l[-2] = \n", l[-2])
 
     print("\n")
 

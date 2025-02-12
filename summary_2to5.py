@@ -3,7 +3,7 @@
 # 2. Numeric Types
 # 3. Sequence Types
 # 4. Strings
-# 5. Dictionary
+# 5. Dictionary 
 
 """Extra Problem: Stretch Goal"""
 # It's a stetch because we haven't gone over loops or functions yet.  But, if you're feeling ambitious, give it a try.
