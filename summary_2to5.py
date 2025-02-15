@@ -19,17 +19,33 @@ def main():
     Street Address
     City, State Zipcode
     """
+    names = {x.split()[1]: x.split()[0] for x in full_names.split(", ")}
+    
+    for name_tuple in zipcodes_by_lastname:
+        last_name = name_tuple[0]
+        zipcode = name_tuple[1]
+        full_name = names[last_name] + " " + last_name
+        street = streets_by_lastname[last_name]
+        city = city_and_state_by_zipcode[zipcode][0]
+        state = city_and_state_by_zipcode[zipcode][1]
 
+        template = """%(full_name)s
+        %(street)s
+        %(city)s, %(state)s %(zipcode)s"""
+
+        template2 = f'{full_name}\n{street}\n{city}, {state} {zipcode}'
+
+        print(template % {"full_name": full_name, "street": street, "city": city, "state": state, "zipcode": zipcode})
+
+        print(template2)
+
+    
+        
     # 1. Separate out the last names from the full names and place them in a list.
     # 2. Loop through the list of last names and use them to get the street address from the streets_by_lastname dictionary.
     # 3. Use the last names to gain access to the zipcodes in the zipcodes_by_lastname tuple.
     # 4. Use the zipcodes to get the city and state from the city_and_state_by_zipcode dictionary.
     # 5. Create a dictionary with the full name as the key and the multiline string as the value.
-
-
-
-
-    pass
 
 if __name__ == "__main__":
     main()
