@@ -41,6 +41,7 @@ def main():
     This is a common pattern in Python, however, if you are not changing anything, then looping through actual values is fine.
     """
 
+
     # Loop Through Tuples
     # Loop Through ACTUAL values
     t = (1, 2, 3, 4, 5)

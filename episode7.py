@@ -2,8 +2,8 @@
 import json
 
 def main():
-    def mini_reader():
-        with open(file="episode7_output.txt", mode='r') as f:
+    def mini_reader(to_path="episode7_input.txt"):
+        with open(file=to_path, mode='r') as f:
             print(f.read())
     """
     Without going into great detail, I am just giving you examples of how to read and write files in Python.
@@ -20,6 +20,8 @@ def main():
     *note that 'file' in the above syntax is the name of a local file (e.g. 'episode6_input.txt') or 
     a full path to a file (e.g. '.../username/Documents/episode6_input.txt')
     """
+    path2 = "episode7_output.txt"
+    path3 = "episode7_output.json"
     #region Basic Open and Context Manager
     # 'Basic Open'
     f = open("episode7_input.txt", 'r')
@@ -27,52 +29,52 @@ def main():
 
     # 'Context Manager' to open a file in a way that auto-closes file
     with open("episode7_input.txt", 'r') as f:
-        print('\nplaceholder\n')
+        pass # Just a placeholder
     #endregion
-
-    #region Different Methods for Reading Files, truncating files and seeking
-    # 'readline()' - reads a single line from the file
-    print("\n'readline()' - reads a single line from the file")
-    with open("episode7_input.txt", 'r') as f:
-        print(f.readline())
-    # 'readlines()' - reads all lines from the file and returns a list of strings that were separated by newline escapes
-    print("\n'readlines()' - returns a list of strings that were separated by newline escapes")
-    with open("episode7_input.txt", 'r') as f:
-        print(f.readlines())
 
     # 'read()' - reads the entire file and returns it as one large string with newline characters
     print("\n'read()' - reads the entire file and returns it as one large string with newline characters")
     with open("episode7_input.txt", 'r') as f:
         print(f.read())
 
+    #region Different Methods for Reading Files, truncating files and seeking
+    # 'readline()' - reads a single line from the file
+    print("\n'readline()' - reads a single line from the file\n")
+    with open("episode7_input.txt", 'r') as f:
+        print(f.readline())
+
+    # 'readlines()' - reads all lines from the file and returns a list of strings that were separated by newline escapes
+    print("\n'readlines()' - returns a list of strings that were separated by newline escapes\n")
+    with open("episode7_input.txt", 'r') as f:
+        print(f.readlines())
+
+    # 'seek()' - moves the cursor to a certain position in the file
+    print("\n'seek()' - moves the cursor to a certain position in the file\n")
+    with open("episode7_input.txt", 'r+') as f: # or 'w'
+        f.seek(10) # moves the cursor to the beginning of the file
+        print(f.read())
+    #endregion
+
     # 'truncate()' - truncates the file to a certain size
-    print("\n'truncate()' - truncates the file to a certain size")
+    print("\n'truncate()' - truncates the file to a certain size\n")
     with open("episode7_input.txt", 'r+') as f: # or 'w'
         f.truncate(10) # truncates the file to 10 characters, set to 0 to delete all contents
     mini_reader()
-
-    
-    # 'seek()' - moves the cursor to a certain position in the file
-    print("\n'seek()' - moves the cursor to a certain position in the file")
-    with open("episode7_input.txt", 'r+') as f: # or 'w'
-        f.seek(0) # moves the cursor to the beginning of the file
-        print(f.read())
-    #endregion
 
     #region Different Methods for Writing Files
     # 'write()' - writes a string to the file
     print("\n'write()' - writes a string to the file")
     with open("episode7_output.txt", 'w') as f:
         f.write("Hello, World!")
-    mini_reader()
+    mini_reader(path2)
         # Notice how this will overwrite the file if it already exists.
 
     # 'writelines()' - writes a list of strings to the file
-    print("\n'writelines()' - writes a list of strings to the file")
+    print("\n'writelines()' - writes a list of strings to the file\n")
     with open("episode7_output.txt", 'w') as f:
         f.writelines(["Hello, World!\n", "My name is GrovesDaMan.\n",
                         "I am a Python programmer.\n", "I am trying to teach so I can better learn myself.\n"])
-    mini_reader()
+    mini_reader(path2)
         # Notice how this will overwrite the file if it already exists.
     #endregion
 
@@ -87,12 +89,13 @@ def main():
     I have come across JSON in the form of API responses and data storage.  I will cover its simple use here.
     """
     # 'json.dump()' - writes a Python object to a file in JSON format
-    print("\n'json.dump()' - writes a Python object to a file in JSON format")
+    print("\n'json.dump()' - writes a Python object to a file in JSON format\n")
     with open("episode7_output.json", 'w') as f:
         json.dump({"a": 1, "b": 2, "c": 3}, f)
+    mini_reader(path3)
 
     # 'json.load()' - reads a JSON file and returns a Python object
-    print("\n'json.load()' - reads a JSON file and returns a Python object")
+    print("\n'json.load()' - reads a JSON file and returns a Python object\n")
     with open("episode7_output.json", 'r') as f:
         d = json.load(f)
         print(f'{d=}')
@@ -107,6 +110,6 @@ and hopefully sweet
 and should get the point
 across, I hope.
 """
-    with open("episode6_input.txt", 'w') as f:
+    with open("episode7_input.txt", 'w') as f:
         f.write(data)
     main()
