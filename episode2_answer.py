@@ -1,4 +1,30 @@
 def main():
+    # 1. How do you define variables in Python?
+    """
+    You write a name for the variable and then use the assignment operator '=' to assign a value to the variable.
+    """
+    # 2. What is the difference between division and floor division?
+    """
+    Division is the normal division operation that you are used to.  It will return a float value.
+    Floor division is the division operation that will return the integer value of the division operation.
+    """
+    # 3. How do you create an exponent in Python?
+    """
+    You use the double asterisk '**' to create an exponent in Python.
+    """
+    # 4. What is the modulo operator and what does it do?
+    """
+    The modulo operator is the percent sign '%' and it returns the remainder of a division operation.
+    """
+    # 5. Name one useful method from the math module
+    """
+    The math module has a lot of useful methods.  One of the most useful is the math.sqrt() method.
+    """
+    # 6. What does the random module do?
+    """
+    The random module is used to generate random numbers in Python.
+    """
+
     x = input("Enter a number: ")
     y = input("Enter another number: ")
     return int(x) + int(y)

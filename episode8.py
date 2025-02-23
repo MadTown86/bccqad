@@ -1,6 +1,5 @@
 # Episode 8: Functions
-from typing import List, Dict
-
+import math
 """
 Main Points Covered:
 1. Defining Functions
@@ -21,7 +20,7 @@ def function_name(arg1, arg2, arg3, ...):
 
 Argument Types:
 1. Positional Arguments
-2. Keyword Arguments
+2. Keyword Arguments - argument values that are assigned by variable_name = value syntax when calling the function
 3. Default Arguments
 4. Variable Length Arguments (*args, **kwargs)
 
@@ -29,45 +28,49 @@ They are defined in the following order:
 def function_name(positional_args, keyword_args, default_args, *args, **kwargs):
     # code block
     return value
+
+*Note: For those that haven't caught on yet.  After you create a function using def function_name():,
+You can CALL the function by using function_name().  The fact that it is called CALLING a function is
+what I wanted to point out.
+
+Function Header = your def statement that defines the function
+Function Call = when you actually use the function by name
 """
 
-# 1. Defining a Function
-def say_hello():
-    print("Hello, World!")
-    # 'return' is optional
-
-# Example of more complex functions:
-def subtract(x, y):
-    # 'x' and 'y' are positional arguments, meaning the order matters
-    return x + y
-
-def re_arrange(l: List[str], d: Dict) -> Dict:
+def main():
     """
-    This function takes a list and a dictionary and returns a dicitonary with the list values as keys
-    and the dictionary values as values.
-
-    I have added what are called 'type hints' to the function definition.  This is a way to allow
-    the user to know what type of data the function expects and what type of data it will return.
-
-    This is not required, but it is good practice and it can help with debugging because when incorrect
-    types are passed to the function, the IDE will highlight it and throw an error.
+    1. Start by defining functions with various argument types
+    2. Then go into adding type notation to functions to help you in the future
     """
-    res = {}
-    if len(l) == len(d): # check if the list and dictionary are the same length
-        for k, v in d.items():
-            res[l.pop(0)] = (k, v)
-    return res
+    # 1. Defining Simple Function
+    def greet():
+        print("Hello, World!")
+    greet()
 
-# 2. Function Arguments
-def say_hello_to(name):
-    print(f"Hello, {name}!")
+    # 2. Defining Function with 2 Positional Arguments
+    def pythag(a, b):
+        return math.sqrt(a**2 + b**2)
+    print(pythag(3, 4))
 
-def say_hello_to_default(name="World"):
-    print(f"Hello, {name}!")
+    # 3. Function 2 Positional Arguments That Position Matters
+    def subtract(a, b):
+        return a - b
+    print(subtract(5, 3))
+    print(subtract(3, 5))
 
-# 3. Function Return Values
-def add(x, y):
-    return x + y
+    """
+    Keyword functions and default values get confusing.
+    """
 
-def add_subtract(x, y):
-    return x + y, x - y
+    # 4. Function with 1 Positional and 1 Keyword Argument
+    def divide(a, b=1):
+        return a / b
+    print(divide(10)) # You don't need to pass in b because it has a default value
+    print(divide(10, 2)) # You can pass in b to override the default value
+
+
+
+if __name__ == "__main__":
+    main()
+
+
