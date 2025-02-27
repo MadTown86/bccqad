@@ -69,7 +69,7 @@ def main():
     # 7. Create dictionary 'd2' with the following key: value pairs:
     #    d2 = {"a": 2, "f": 4, "g": {'e': 5}}
     print("\nQuestion 7: Create dictionary 'd2' with the following key: value pairs - Output:")
-    d2 = {"a": 2, "f": 4, "g": 5}
+    d2 = {"a": 2, "f": 4, "g": {'e': 5}}
     print(f'{d2=}')
     
     # 8. If you were to merge the two dictionaries, what would the resultant list of keys be for the dictionary?
