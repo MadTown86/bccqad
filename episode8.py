@@ -1,26 +1,12 @@
 # Episode 8: Functions
 import math
 """
-Main Points Covered:
-1. Defining Functions
-2. Function Arguments
-3. Function Return Values
-
-The main purpose of functions is to decrease overall work by reusing code.
-
-If you find yourself copying and pasting code to perform a certain operation multiple times, 
-then you should consider creating a function to handle that operation.
-
-Syntax:
-def function_name(arg1, arg2, arg3, ...):
-    # code block
-    return value
-
-*Note: 'return' is optional.  If you do not include a 'return' statement, then the function will return 'None'.
+So, I am going to get more in-depth for this episode, because this is the portion that starts to
+open up the power of programming in general.  Functions get things done.
 
 Argument Types:
 1. Positional Arguments
-2. Keyword Arguments - argument values that are assigned by variable_name = value syntax when calling the function
+2. Keyword Arguments (keyword=value - used during function call)
 3. Default Arguments
 4. Variable Length Arguments (*args, **kwargs)
 
@@ -35,6 +21,10 @@ what I wanted to point out.
 
 Function Header = your def statement that defines the function
 Function Call = when you actually use the function by name
+
+*Note, to use a function it has to be processed first in your code.  Python reads here how the western
+world reads, left to right, top to bottom.  So, if you define a function after you call it,
+it will not work.  You have to define it first.
 """
 
 def main():
@@ -64,6 +54,7 @@ def main():
         return a - b
     print(subtract(5, 3)) # 2
     print(subtract(3, 5)) # -2
+    print(subtract(b=3, a=5)) # 2
 
     # 4. Function with 1 Positional and 1 default argument
     def divide(a, b=1):
