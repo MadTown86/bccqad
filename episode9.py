@@ -30,7 +30,7 @@ l = [1, 2]
 
 # 2. Basic if statement with equals comparison operator
 if a == 1:
-    print("a is 1")
+    print("a is equal to 1")
 
 # 3. if-else statement with equals comparison operator
 if a == c:

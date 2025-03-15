@@ -1,4 +1,4 @@
-# Episode 10: More Looping Concepts, help() and docs
+# Episode 10: More Looping Concepts, help() and Dynamic Typing
 """
 This episode is going to cover the following:
 1. Nested Loops
