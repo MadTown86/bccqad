@@ -52,11 +52,6 @@ List of keyword usage that requires indentation after the keyword:
 Triple-quoted strings or multi-line comments
 """
 
-
-
-"""
-"""
-
 def main(): # Notice how all the code is indented under the main function.
     
     # 1. Basic syntax of Python - Variable Assignment with Equals Sign
@@ -88,7 +83,6 @@ def main(): # Notice how all the code is indented under the main function.
         print("a is greater than b")
     else:
         print("a is equal to b")
-
 
 
     # 5. Loop syntax - Requires Indentation
