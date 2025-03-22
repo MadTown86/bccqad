@@ -24,7 +24,7 @@ def main():
     """
     The random module is used to generate random numbers in Python.
     """
-
+    # 7. Stretch Problem:
     x = input("Enter a number: ")
     y = input("Enter another number: ")
     return int(x) + int(y)
