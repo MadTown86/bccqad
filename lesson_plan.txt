@@ -1,0 +1,74 @@
+Blue Collar Codes: The Quick and Dirty
+
+Date: 3/24/2025
+
+Goal:
+Outline recommended learning pathway for beginners through Python.
+
+Introduction:
+These episodes are meant to teach Python by topic.  Beginning Python topics are first, then will increase in difficulty as I 
+go through the topics.
+
+A Recommendation For Beginners:
+Unfortunately, you have to wade through the boring stuff first.  However, I made these videos short and the resources rich.  You
+definitely can just watch the videos, download the resources and then utilize the resources down the line if you get stuck.
+
+YOUR aim as someone trying to learn Python is to get EXCITED about it. You get excited when you recognize a problem you have that can
+be solved by writing a program.  You can only do this once you understand enough about the language to see the possibilities.
+
+The best way of explaining it is to tell you about my own experience.  When I learned enough Python, I started to see problems
+in my life that I could solve with code.  "Oh, I could request information from an API, extract that information and create
+a grading algorithm.  I'll use Tkinter like this, loop through the symbols like this, etc."  
+
+For me, I was interested in investing in the stock market, so I built a program that
+would help me with the market research required to make educated investment decisions.  Now that I am at home and do most of the
+grocery shopping, I want to build an application that scrapes local grocery store websites for price by unit information so IDE
+can see which places have the best prices for which products.
+
+
+BEGINNERS:
+Episode 1: BCC1 - Beginner Python Tutorial - Download and go! - VSCode and Pycharm
+ASIDE: BCC - Beginner Python Tutorial - Basic Syntax Rules and Javascript Comparison 
+Episode 2: BCC2 - Beginner Python Tutorial - Overview Core Data Types - Deeper Dive Numeric Types
+Episode 3: BCC3 - Beginner Python Tutorial - Core Data Type - Sequences
+Episode 4: BCC4 - Beginner Python Tutorial - Core Data Type - Strings
+Episode 5: BCC5 - Beginner Python Tutorial - Core Data Type - Dictionary
+Episode 6: BCC6 - Beginner Python Tutorial - For and While Loops
+Episode 7: BCC7 - Beginner Python Tutorial - Reading and Writing Files
+Episode 8: BCC8 - Beginner Python Tutorial - Functions
+Episode 9: BCC9 - Beginner Python Tutorial - Conditional Statements - If, Elif, Else
+Episode 10: BCC10 - Beginner Python Tutorial - More Looping Concepts: Break, Continue, Help()
+Episode 11: BCC11 - Beginner Python Tutorial - Scope (LEGB)
+Episode 12: BCC12 - Beginner Python Tutorial - Classes 1 of 2
+Episode 13: BCC13 - Beginner Python Tutorial - Classes 2 of 2
+Episode 14: BCC14 - Beginner Python Tutorial - Virtual Environments
+Episode 15: BCC15 - Beginner Python Tutorial - Source Control - Git
+Episode 16: BCC16 - Beginner Python Tutorial - Python File Structure - Modules and Packages
+Episode 17: BCC17 - Beginner Python Tutorial - Debugging Overview - VSCode
+Episode 18: BCC18 - Beginner Python Tutorial - Debugging Overview - Pycharm
+
+Optional "Fast Track":
+Episode: Summary 2-5
+Episode: Summary 6-10
+Episode: Summary 11-13
+Episode: Summary 13-18
+
+INTERMEDIATE:
+Episode 19: BCC19 - Intermediate Python Tutorial - Introduction to Data Structures
+Episode 20: BCC20 - Intermediate Python Tutorial - Low Level Arrays to Dynamic Arrays
+Episode 21: BCC21 - Intermediate Python Tutorial - Stacks
+Episode 22: BCC22 - Intermediate Python Tutorial - Queues and Deques
+Episode 23: BCC23 - Intermediate Python Tutorial - Linked Lists
+Episode 24: BCC24 - Intermediate Python Tutorial - Trees
+Episode 25: BCC25 - Intermediate Python Tutorial - Priority Queues
+Episode 26: BCC26 - Intermediate Python Tutorial - Mappings/Dictionaries Expanded
+Episode 27: BCC27 - Intermediate Python Tutorial - Sorting and Selecting
+Episode 28: BCC28 - Intermediate Python Tutorial - Text Processing
+Episode 29: BCC29 - Intermediate Python Tutorial - Graph Algorithms
+Episode 30: BCC30 - Intermediate Python Tutorial - Memory Management and B-Trees
+
+
+Going Forward Recommendation:
+Pathway 1: Desktop Application and GUI creation - Tkinter
+Pathway 2: Web Development - Flask, Jinja, Django, JS, Html, CSS 
+Pathway 3: Backend Development - Data Structures, Grokking LeetCode Interviews, Coding Challenge Websites

@@ -2,6 +2,9 @@
 
 """
 This episode is going to cover the following:
+
+Namespace - A table that stores references to objects in memory.
+
 1. Scope (LEGB)
     -Local
     -Enclosing
@@ -26,10 +29,13 @@ defined at the top-level of a program and accessible from anywhere in the file. 
 
 # 1. Local Scope (L)
 def foo():
-    y = 20
-    print(y)
+    x = 20
+    z = 10
+    print(x)
 
 foo()
+
+
 
 """
 The 'y' variable is defined within the function 'foo'.  This is an example of a 'local' scope.  Local in terms of Python means
@@ -38,7 +44,7 @@ that it is defined within a function and only accessible within that function.  
 
 # Try Block Showing 'y' Variable as Inaccessible
 try: 
-    print(y)
+    print(z)
 except NameError as e:
     print("ERROR: 'y' variable is only accessible from within the 'foo' function definition.  You can't change it from outside the function.")
 
@@ -129,3 +135,6 @@ outer5()
 and the 'inner' function is nested within the 'outer' function.  The 'nonlocal' keyword allows you to change the value of the 'x' variable
 from within the 'inner' function.
 """
+
+if __name__ == "__main__":
+    pass
