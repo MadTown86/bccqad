@@ -39,8 +39,8 @@ Episode 8: BCC8 - Beginner Python Tutorial - Functions
 Episode 9: BCC9 - Beginner Python Tutorial - Conditional Statements - If, Elif, Else
 Episode 10: BCC10 - Beginner Python Tutorial - More Looping Concepts: Break, Continue, Help()
 Episode 11: BCC11 - Beginner Python Tutorial - Scope (LEGB)
-Episode 12: BCC12 - Beginner Python Tutorial - Classes 1 of 2
-Episode 13: BCC13 - Beginner Python Tutorial - Classes 2 of 2
+Episode 12: BCC12 - Beginner Python Tutorial - Classes 1 of 2: Basic Creation
+Episode 13: BCC13 - Beginner Python Tutorial - Classes 2 of 2: MRO and Inheritance
 Episode 14: BCC14 - Beginner Python Tutorial - Virtual Environments
 Episode 15: BCC15 - Beginner Python Tutorial - Source Control - Git
 Episode 16: BCC16 - Beginner Python Tutorial - Python File Structure - Modules and Packages
