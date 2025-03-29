@@ -16,6 +16,12 @@ maintained through inheritance and polymorphism.
 """
 
 """
+For this episode, please focus on the following:
+1. Class definition
+2. Class instantiation
+2. Attribute creation, calling
+3. Method creation, calling
+
 Basic Class Creation Syntax:
 
 class ClassName(ParentClass1, ParentClass2, ...):
@@ -55,7 +61,10 @@ of the class.  It is similar to 'this' in other programming languages and simply
 is a syntactical requirement.
 
 Lastly and most importantly, classes are the way you can fully customize the behavior of
-Python objects.  You will learn more about how to do this in the next episode classes 2 of 2.  
+Python objects.  You will learn more about how to do this in the next episode classes 2 of 2.
+
+The way classes behave is a large part of object-oriented programming (OOP).  This is a complex topic
+that can be difficult to grasp.
 """
 
 # Simple Class Creation:
