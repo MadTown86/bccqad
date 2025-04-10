@@ -1,4 +1,4 @@
-# Episode 12: Classes 1 of 2
+# Episode 12: Classes 1  
 
 """
 Simple Terms:
