@@ -1,5 +1,4 @@
 # Episode 14: Virtual Environments and Pip Package Management
-import tkinter as tk
 
 """
 Virtual Environments in Python:
