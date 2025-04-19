@@ -44,7 +44,7 @@ Episode 13: BCC13 - Beginner Python Tutorial - Classes 2 of 2: MRO and Inheritan
 Episode 14: BCC14 - Beginner Python Tutorial - Virtual Environments
 Episode 15: BCC15 - Beginner Python Tutorial - Source Control - Git
 Episode 16: BCC16 - Beginner Python Tutorial - Python File Structure - Modules and Packages
-Episode 17: BCC17 - Beginner Python Tutorial - Debugging Overview - VSCode
+Episode 17: BCC17 - Beginner Python Tutorial - Exceptions, Try-Catch, Raise
 Episode 18: BCC18 - Beginner Python Tutorial - Debugging Overview - Pycharm
 
 Optional "Fast Track":
