@@ -45,7 +45,8 @@ Episode 14: BCC14 - Beginner Python Tutorial - Virtual Environments
 Episode 15: BCC15 - Beginner Python Tutorial - Source Control - Git
 Episode 16: BCC16 - Beginner Python Tutorial - Python File Structure - Modules and Packages
 Episode 17: BCC17 - Beginner Python Tutorial - Exceptions, Try-Catch, Raise
-Episode 18: BCC18 - Beginner Python Tutorial - Debugging Overview - Pycharm
+Episode 18: BCC18 - Beginner Python Tutorial - Debugging Overview - VSCode
+Episode 18-2: BCC18-2 - Beginner Python Tutorial - Debugging Overview - PyCharm
 
 Optional "Fast Track":
 Episode: Summary 2-5
