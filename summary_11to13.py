@@ -36,9 +36,10 @@ def wrapper():
     # Local scope in reference to wrapper()
     # Enclosing Scope in reference to inner_function()
     a = 30
+    print("\n function:wrapper()")
+    print(a)
     def inner_function():
-        # Local scope to inner_function()
-        nonlocal a 
+        nonlocal a
         a = 25
         print("\n function:inner_function()")
         print(a)
