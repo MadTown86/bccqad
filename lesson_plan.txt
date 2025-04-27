@@ -52,21 +52,25 @@ Optional "Fast Track":
 Episode: Summary 2-5
 Episode: Summary 6-10
 Episode: Summary 11-13
-Episode: Summary 13-18
+Episode: Summary 14-18
 
-INTERMEDIATE:
-Episode 19: BCC19 - Intermediate Python Tutorial - Introduction to Data Structures
-Episode 20: BCC20 - Intermediate Python Tutorial - Low Level Arrays to Dynamic Arrays
-Episode 21: BCC21 - Intermediate Python Tutorial - Stacks
-Episode 22: BCC22 - Intermediate Python Tutorial - Queues and Deques
-Episode 23: BCC23 - Intermediate Python Tutorial - Linked Lists
-Episode 24: BCC24 - Intermediate Python Tutorial - Trees
-Episode 25: BCC25 - Intermediate Python Tutorial - Priority Queues
-Episode 26: BCC26 - Intermediate Python Tutorial - Mappings/Dictionaries Expanded
-Episode 27: BCC27 - Intermediate Python Tutorial - Sorting and Selecting
-Episode 28: BCC28 - Intermediate Python Tutorial - Text Processing
-Episode 29: BCC29 - Intermediate Python Tutorial - Graph Algorithms
-Episode 30: BCC30 - Intermediate Python Tutorial - Memory Management and B-Trees
+INTERMEDIATE - GENERAL
+Episode 19: BCC19 - Intermediate Python Tutorial - Big O - Time Complexity
+Episode 20: BCC20 - Intermediate Python Tutorial - Timing Your Functions
+
+INTERMEDIATE - BACKEND PATHWAY:
+Episode ##: BCC## - Intermediate Python Tutorial - Introduction to Data Structures
+Episode ##: BCC## - Intermediate Python Tutorial - Low Level Arrays to Dynamic Arrays
+Episode ##: BCC## - Intermediate Python Tutorial - Stacks
+Episode ##: BCC## - Intermediate Python Tutorial - Queues and Deques
+Episode ##: BCC## - Intermediate Python Tutorial - Linked Lists
+Episode ##: BCC## - Intermediate Python Tutorial - Trees
+Episode ##: BCC## - Intermediate Python Tutorial - Priority Queues
+Episode ##: BCC## - Intermediate Python Tutorial - Mappings/Dictionaries Expanded
+Episode ##: BCC## - Intermediate Python Tutorial - Sorting and Selecting
+Episode ##: BCC## - Intermediate Python Tutorial - Text Processing
+Episode ##: BCC## - Intermediate Python Tutorial - Graph Algorithms
+Episode ##: BCC## - Intermediate Python Tutorial - Memory Management and B-Trees
 
 
 Going Forward Recommendation:
