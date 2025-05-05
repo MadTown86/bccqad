@@ -59,11 +59,10 @@ Episode 19: BCC19 - Intermediate Python Tutorial - Big O - Time Complexity
 Episode 20: BCC20 - Intermediate Python Tutorial - Timing Your Functions
 
 INTERMEDIATE - BACKEND PATHWAY:
-Episode ##: BCC## - Intermediate Python Tutorial - Introduction to Data Structures
-Episode ##: BCC## - Intermediate Python Tutorial - Low Level Arrays to Dynamic Arrays
-Episode ##: BCC## - Intermediate Python Tutorial - Stacks
-Episode ##: BCC## - Intermediate Python Tutorial - Queues and Deques
-Episode ##: BCC## - Intermediate Python Tutorial - Linked Lists
+Episode 21: BCC21 - Intermediate Python Tutorial - Introduction to Data Structures
+Episode 22: BCC22 - Intermediate Python Tutorial - Memory, Array and Python List
+Episode 23: BCC23 - Intermediate Python Tutorial - Linked Lists
+Episode 24: BCC24 - Intermediate Python Tutorial - Stacks and Queues
 Episode ##: BCC## - Intermediate Python Tutorial - Trees
 Episode ##: BCC## - Intermediate Python Tutorial - Priority Queues
 Episode ##: BCC## - Intermediate Python Tutorial - Mappings/Dictionaries Expanded

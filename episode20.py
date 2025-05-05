@@ -24,6 +24,7 @@ def my_timmer(func):
 #     return wrapper
 
 # @my_memory
+
 @my_timmer
 def my_function(n: int) -> int:
     """A function that calculates the sum of numbers from 0 to n-1."""
@@ -82,7 +83,7 @@ def cubic_function(n):
 if __name__ == "__main__":
     l = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
     print("\nStarting the program...")
-    result = my_function(1000000)
+    result = my_function(10000000)
     print(f"Result: {result}")
     print("Program finished.\n")
 
