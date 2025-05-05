@@ -66,7 +66,8 @@ import sys
 # It only returns the size of the list object itself. (Compact Arrays = more accurate representation of size, Referential Array = Only showing size of reference list)
 
 
-# Somewhat Compact Array - except with string header overhead:
+# Compact Array - In That it is stored contiguously in memory and in this specific example it is also homogeneous because all characters
+# fall into the Latin-1 Unicode range.:
 s = "string"
 print(sys.getsizeof(s)) # 54 bytes
 
@@ -86,8 +87,4 @@ print("Size of list object: ", sys.getsizeof(l)) # 88 bytes
 This may not matter on such a small scale as this, but consider thousands of strings in a list.  
 """
 
-l = [] # Python assigns a default size to this list.  In order to maintain the time complexity of O(1), it can never get to a point where it is full
-# So it will always have a little bit of extra space in it.  This is called 'overhead'.
-# The main issue with this is that if the quantity of data is constantly fluctuating, the overhead can be a lot of wasted space and the time
-# complexity of O(1) may not be accurate.
 
