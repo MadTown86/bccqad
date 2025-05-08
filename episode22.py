@@ -30,13 +30,13 @@ The computer needs to find a chunk of memory large enough to store the entire ar
 # 3. Compact Array and Referential Array?
 - A compact array is a single block of contiguous memory that is allocated for the entire array.
 - Items have to be homogeneous, meaning they have to be the same type of data so that they are all the same size.
-- Compact arrays are efficient because each element can be looked up in O(1) time generally speaking.
+- Compact arrays are more memory efficient and can be faster to access becasue the data is stored in a single block of memory. 
 
 
 ## Referential Array:
 - A referential array is an array of references to other arrays.  This means that the array is not stored in a single block of memory.
 - Use case of this is the following:
-l = ["John", "Jacob", "Jingle", "Heimer"] : This is a list of strings.  Each string is stored in a separate block of memory.
+l = ["John", "Jacob", "Jingle", "Heimer", "david", "] : This is a list of strings.  Each string is stored in a separate block of memory.
 * This measn there are at least 5 different blocks of memory that are allocated for this list.  Each string, and then the list itself.
 - This is not as efficient as a compact array, but it allows for more flexibility in the data structure.
 
