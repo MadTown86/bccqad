@@ -1,1 +1,1 @@
-print(a)
+        bin_digits = bin(num)[2:]
