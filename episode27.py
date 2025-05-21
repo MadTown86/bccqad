@@ -43,6 +43,22 @@ def bfs(node, value):
             queue.append(current_node.right)
 
     return None  # Value not found in the tree
+
+def dfs(node, value):
+    "Pre Order"
+    if not node:
+        return None
+    print(node.value)
+    if node.value == value:
+        return node
+    left_result = dfs(node.left, value)
+    if left_result:
+        return left_result
+    right_result = dfs(node.right, value)
+    if right_result:
+        return right_result
+    return None  # Value not found in the tree
+
     
 if __name__ == "__main__":
     root = Node(1)
@@ -85,4 +101,7 @@ if __name__ == "__main__":
     # Breadth First Search (BFS) - Level Order Traversal
 
     print("BFS Traversal:")
-    bfs(root, 12)  # Searching for node with value 5
+    print("\n\nBFS")
+    print(bfs(root, 12))  # Searching for node with value 5
+    print("\n\nDFS")
+    print(dfs(root, 12))

@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Search Tree Visualizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .controls {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input[type="number"] {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 100px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: #333;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .tree-container {
+            padding: 40px 20px;
+            min-height: 400px;
+            position: relative;
+            overflow: auto;
+        }
+
+        .tree-svg {
+            width: 100%;
+            height: 600px;
+        }
+
+        .node {
+            cursor: pointer;
+            transition: all 0.5s;
+        }
+
+        .node circle {
+            fill: #4facfe;
+            stroke: #2196F3;
+            stroke-width: 2;
+            transition: all 0.5s;
+        }
+
+        .node text {
+            fill: white;
+            font-size: 16px;
+            font-weight: bold;
+            text-anchor: middle;
+            dominant-baseline: central;
+        }
+
+        .node.current circle {
+            fill: #ff6b35;
+            stroke: #ff4500;
+            transform-origin: center;
+            transform: scale(1.2);
+            animation: currentNodePulse 0.8s ease-in-out infinite;
+        }
+
+        .node.comparing circle {
+            fill: #9c27b0;
+            stroke: #6a1b9a;
+            transform-origin: center;
+            transform: scale(1.15);
+            animation: compareNodePulse 0.6s ease-in-out infinite;
+        }
+
+        .node.path-left circle {
+            fill: #2196f3;
+            stroke: #1976d2;
+            transform-origin: center;
+            transform: scale(1.1);
+        }
+
+        .node.path-right circle {
+            fill: #ff9800;
+            stroke: #f57c00;
+            transform-origin: center;
+            transform: scale(1.1);
+        }
+
+        .node.visited circle {
+            fill: #4caf50;
+            stroke: #388e3c;
+            transform-origin: center;
+            transform: scale(1.0);
+        }
+
+        .node.new circle {
+            fill: #6bcf7f;
+            stroke: #4caf50;
+            transform-origin: center;
+            animation: newNodePulse 1s ease-out;
+        }
+
+        .node.being-deleted circle {
+            fill: #ff5252;
+            stroke: #d32f2f;
+            transform-origin: center;
+            animation: deleteNodePulse 1s ease-out;
+        }
+
+        .node.found circle {
+            fill: #00e676;
+            stroke: #00c853;
+            transform-origin: center;
+            animation: foundNodePulse 1.5s ease-out;
+        }
+
+        @keyframes currentNodePulse {
+            0%, 100% { transform: scale(1.2); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.8; }
+        }
+
+        @keyframes compareNodePulse {
+            0%, 100% { transform: scale(1.15); opacity: 1; }
+            50% { transform: scale(1.25); opacity: 0.9; }
+        }
+
+        @keyframes foundNodePulse {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.4); }
+            50% { transform: scale(1.2); }
+            75% { transform: scale(1.3); }
+            100% { transform: scale(1.1); }
+        }
+
+        @keyframes newNodePulse {
+            0% { 
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.3);
+            }
+            100% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes deleteNodePulse {
+            0% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.3);
+                opacity: 0.5;
+            }
+            100% { 
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+
+        .node:hover circle {
+            fill: #2196F3;
+            transform-origin: center;
+            transform: scale(1.1);
+        }
+
+        .link {
+            fill: none;
+            stroke: #666;
+            stroke-width: 2;
+            transition: all 0.5s;
+        }
+
+        .link.highlighted {
+            stroke: #ff6b35;
+            stroke-width: 4;
+            animation: linkPulse 0.5s ease-out;
+        }
+
+        @keyframes linkPulse {
+            0% { stroke-width: 2; }
+            50% { stroke-width: 6; }
+            100% { stroke-width: 4; }
+        }
+
+        .status {
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .step-info {
+            padding: 15px 20px;
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #1565c0;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .traversal-container {
+            padding: 20px;
+            background: #fff;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .traversal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .traversal-result {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            text-align: center;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .speed-slider {
+            width: 100px;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+            
+            .input-group {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Binary Search Tree Visualizer</h1>
+            <p>Interactive visualization with step-by-step animations</p>
+        </div>
+
+        <div class="controls">
+            <div class="input-group">
+                <label for="nodeValue">Value:</label>
+                <input type="number" id="nodeValue" placeholder="Enter value" min="-999" max="999">
+            </div>
+            <button class="btn-primary" onclick="insertValue()" id="insertBtn">Insert</button>
+            <button class="btn-secondary" onclick="deleteValue()" id="deleteBtn">Delete</button>
+            <button class="btn-danger" onclick="clearTree()" id="clearBtn">Clear Tree</button>
+            <button class="btn-primary" onclick="insertRandom()" id="randomBtn">Random Insert</button>
+            <div class="speed-control">
+                <label for="speedSlider">Speed:</label>
+                <input type="range" id="speedSlider" class="speed-slider" min="100" max="2000" value="800">
+                <span id="speedLabel">0.8s</span>
+            </div>
+        </div>
+
+        <div class="step-info" id="stepInfo">Ready to insert or delete nodes</div>
+
+        <div class="traversal-container">
+        <script>
+        async function deleteValue() {
+            if (isAnimating) return;
+            
+            const input = document.getElementById('nodeValue');
+            const value = parseInt(input.value);
+            
+            if (isNaN(value)) {
+                updateStatus('Please enter a valid number');
+                return;
+            }
+            
+            toggleButtons(true);
+            const result = await bst.delete(value);
+            
+            if (result.deleted) {
+                updateStatus(`Successfully deleted ${value} while maintaining BST property`);
+                visualizeTree();
+                
+                // Validate BST property after deletion
+                if (!bst.isValidBST()) {
+                    updateStatus(`❌ ERROR: BST property violated after deletion!`);
+                }
+            } else {
+                updateStatus(`Value ${value} not found in the tree`);
+            }
+            
+            input.value = '';
+            updateStepInfo('Ready for next operation');
+            toggleButtons(false);
+        }
+        </script>
+
+            <div class="traversal-result" id="traversalResult">Traversal results will appear here</div>
+        </div>
+
+        <div class="tree-container">
+            <svg class="tree-svg" id="treeSvg"></svg>
+        </div>
+
+        <div class="status" id="status">Ready to insert nodes into the tree</div>
+    </div>
+
+    <script>
+        class Node {
+            constructor(value) {
+                this.value = value;
+                this.left = null;
+                this.right = null;
+                this.id = Math.random().toString(36).substr(2, 9);
+            }
+        }
+
+        class BST {
+            constructor() {
+                this.root = null;
+            }
+
+            async insert(value, visualize = true) {
+                if (this.root === null) {
+                    this.root = new Node(value);
+                    if (visualize) {
+                        await this.visualizeInsertion(value, [this.root]);
+                    }
+                    return { node: this.root, path: [this.root] };
+                } else {
+                    const path = [];
+                    const node = await this.insertRec(this.root, value, path, visualize);
+                    return { node, path };
+                }
+            }
+
+            async insertRec(node, value, path, visualize) {
+                path.push(node);
+                
+                if (visualize) {
+                    // First highlight the node we're about to compare with
+                    await this.highlightNode(node, 'comparing');
+                    updateStepInfo(`Comparing ${value} with ${node.value}...`);
+                    await sleep(animationSpeed * 0.6);
+                    
+                    // Show the comparison result with different colors
+                    if (value < node.value) {
+                        await this.highlightNode(node, 'path-left');
+                        updateStepInfo(`${value} < ${node.value}, going left (smaller values)`);
+                    } else if (value > node.value) {
+                        await this.highlightNode(node, 'path-right');
+                        updateStepInfo(`${value} > ${node.value}, going right (larger values)`);
+                    }
+                    await sleep(animationSpeed * 0.7);
+                }
+                
+                if (value < node.value) {
+                    if (node.left === null) {
+                        node.left = new Node(value);
+                        path.push(node.left);
+                        if (visualize) {
+                            updateStepInfo(`Found empty left position for ${value} (maintains BST property)`);
+                            await this.visualizeInsertion(value, path);
+                        }
+                        return node.left;
+                    } else {
+                        if (visualize) {
+                            await this.highlightNode(node, 'visited');
+                            await sleep(animationSpeed * 0.3);
+                        }
+                        return await this.insertRec(node.left, value, path, visualize);
+                    }
+                } else if (value > node.value) {
+                    if (node.right === null) {
+                        node.right = new Node(value);
+                        path.push(node.right);
+                        if (visualize) {
+                            updateStepInfo(`Found empty right position for ${value} (maintains BST property)`);
+                            await this.visualizeInsertion(value, path);
+                        }
+                        return node.right;
+                    } else {
+                        if (visualize) {
+                            await this.highlightNode(node, 'visited');
+                            await sleep(animationSpeed * 0.3);
+                        }
+                        return await this.insertRec(node.right, value, path, visualize);
+                    }
+                } else {
+                    // Value already exists - BST property maintained by rejecting duplicates
+                    if (visualize) {
+                        await this.highlightNode(node, 'found');
+                        updateStepInfo(`Value ${value} already exists! BST doesn't allow duplicates.`);
+                        await sleep(animationSpeed * 1.2);
+                    }
+                    return null;
+                }
+            }
+
+            async delete(value, visualize = true) {
+                const result = await this.deleteRec(this.root, value, visualize);
+                this.root = result.node;
+                return result;
+            }
+
+            async deleteRec(node, value, visualize, parent = null, isLeft = false) {
+                if (node === null) {
+                    if (visualize) {
+                        updateStepInfo(`Value ${value} not found in tree`);
+                    }
+                    return { node: null, deleted: false };
+                }
+
+                if (visualize) {
+                    // Highlight node we're examining for comparison
+                    await this.highlightNode(node, 'comparing');
+                    updateStepInfo(`Searching for ${value}, examining ${node.value}...`);
+                    await sleep(animationSpeed * 0.6);
+                }
+
+                if (value < node.value) {
+                    if (visualize) {
+                        await this.highlightNode(node, 'path-left');
+                        updateStepInfo(`${value} < ${node.value}, searching left subtree`);
+                        await sleep(animationSpeed * 0.7);
+                        await this.highlightNode(node, 'visited');
+                        await sleep(animationSpeed * 0.3);
+                    }
+                    const result = await this.deleteRec(node.left, value, visualize, node, true);
+                    node.left = result.node;
+                    return { node, deleted: result.deleted };
+                } else if (value > node.value) {
+                    if (visualize) {
+                        await this.highlightNode(node, 'path-right');
+                        updateStepInfo(`${value} > ${node.value}, searching right subtree`);
+                        await sleep(animationSpeed * 0.7);
+                        await this.highlightNode(node, 'visited');
+                        await sleep(animationSpeed * 0.3);
+                    }
+                    const result = await this.deleteRec(node.right, value, visualize, node, false);
+                    node.right = result.node;
+                    return { node, deleted: result.deleted };
+                } else {
+                    // Node to delete found
+                    if (visualize) {
+                        await this.highlightNode(node, 'found');
+                        updateStepInfo(`Found target ${value}! Analyzing deletion case...`);
+                        await sleep(animationSpeed);
+                        await this.highlightNode(node, 'being-deleted');
+                        await sleep(animationSpeed * 0.5);
+                    }
+
+                    if (node.left === null) {
+                        if (visualize) {
+                            updateStepInfo(`Case 1: Node has only right child, replacing with right subtree`);
+                            await sleep(animationSpeed);
+                        }
+                        return { node: node.right, deleted: true };
+                    } else if (node.right === null) {
+                        if (visualize) {
+                            updateStepInfo(`Case 2: Node has only left child, replacing with left subtree`);
+                            await sleep(animationSpeed);
+                        }
+                        return { node: node.left, deleted: true };
+                    } else {
+                        // Node has two children - use inorder successor to maintain BST property
+                        if (visualize) {
+                            updateStepInfo(`Case 3: Node has two children, must find inorder successor to maintain BST property`);
+                            await sleep(animationSpeed);
+                        }
+                        
+                        // Find the inorder successor (smallest value in right subtree)
+                        const minNode = await this.findMin(node.right, visualize);
+                        
+                        if (visualize) {
+                            updateStepInfo(`Replacing ${node.value} with successor ${minNode.value} (preserves BST ordering)`);
+                            await sleep(animationSpeed);
+                        }
+                        
+                        // Replace value with successor value
+                        node.value = minNode.value;
+                        
+                        // Delete the successor node (it will have at most one child)
+                        const result = await this.deleteRec(node.right, minNode.value, visualize, node, false);
+                        node.right = result.node;
+                        return { node, deleted: true };
+                    }
+                }
+            }
+
+            async findMin(node, visualize = false) {
+                if (visualize) {
+                    await this.highlightNode(node, 'comparing');
+                    updateStepInfo(`Finding minimum: examining ${node.value}`);
+                    await sleep(animationSpeed * 0.6);
+                }
+                
+                while (node.left !== null) {
+                    if (visualize) {
+                        await this.highlightNode(node, 'path-left');
+                        updateStepInfo(`${node.value} has left child, going deeper...`);
+                        await sleep(animationSpeed * 0.5);
+                        await this.highlightNode(node, 'visited');
+                        await sleep(animationSpeed * 0.3);
+                    }
+                    node = node.left;
+                    if (visualize) {
+                        await this.highlightNode(node, 'comparing');
+                        updateStepInfo(`Now examining ${node.value}`);
+                        await sleep(animationSpeed * 0.6);
+                    }
+                }
+                
+                if (visualize) {
+                    await this.highlightNode(node, 'found');
+                    updateStepInfo(`Found minimum: ${node.value} (no left child)`);
+                    await sleep(animationSpeed);
+                }
+                
+                return node;
+            }
+
+            async findRec(node, value, visualize) {
+                if (node === null) {
+                    if (visualize) {
+                        updateStepInfo(`Reached null - ${value} not found`);
+                        await sleep(animationSpeed);
+                    }
+                    return null;
+                }
+
+                if (visualize) {
+                    await this.highlightNode(node, 'comparing');
+                    updateStepInfo(`Searching for ${value}, examining ${node.value}...`);
+                    await sleep(animationSpeed * 0.6);
+                }
+
+                if (value === node.value) {
+                    if (visualize) {
+                        await this.highlightNode(node, 'found');
+                        updateStepInfo(`Found ${value}! 🎯`);
+                        await sleep(animationSpeed * 1.2);
+                    }
+                    return node;
+                } else if (value < node.value) {
+                    if (visualize) {
+                        await this.highlightNode(node, 'path-left');
+                        updateStepInfo(`${value} < ${node.value}, searching left subtree`);
+                        await sleep(animationSpeed * 0.7);
+                        await this.highlightNode(node, 'visited');
+                        await sleep(animationSpeed * 0.3);
+                    }
+                    return await this.findRec(node.left, value, visualize);
+                } else {
+                    if (visualize) {
+                        await this.highlightNode(node, 'path-right');
+                        updateStepInfo(`${value} > ${node.value}, searching right subtree`);
+                        await sleep(animationSpeed * 0.7);
+                        await this.highlightNode(node, 'visited');
+                        await sleep(animationSpeed * 0.3);
+                    }
+                    return await this.findRec(node.right, value, visualize);
+                }
+            }
+
+            async visualizeInsertion(value, path) {
+                updateStepInfo(`Inserting ${value} into the tree`);
+                visualizeTree();
+                await sleep(animationSpeed / 2);
+                
+                // Highlight path
+                for (let i = 0; i < path.length - 1; i++) {
+                    await this.highlightNode(path[i], 'visited');
+                    await sleep(animationSpeed / 3);
+                }
+                
+                // Highlight new node
+                const newNode = path[path.length - 1];
+                await this.highlightNode(newNode, 'new');
+                updateStepInfo(`Successfully inserted ${value}`);
+                await sleep(animationSpeed);
+                
+                // Redraw tree to show final state
+                visualizeTree();
+            }
+
+            async highlightNode(node, className) {
+                // Clear all existing highlight classes first
+                const allNodes = document.querySelectorAll('.node');
+                allNodes.forEach(nodeEl => {
+                    nodeEl.classList.remove('current', 'comparing', 'path-left', 'path-right', 'visited', 'new', 'being-deleted', 'found');
+                });
+                
+                // Apply new class to specific node
+                const nodeElement = document.querySelector(`[data-node-id="${node.id}"]`);
+                if (nodeElement) {
+                    nodeElement.classList.add(className);
+                }
+            }
+
+            // Utility method to validate BST property
+            validateBST(node = this.root, min = -Infinity, max = Infinity) {
+                if (node === null) return true;
+                
+                if (node.value <= min || node.value >= max) {
+                    return false;
+                }
+                
+                return this.validateBST(node.left, min, node.value) && 
+                       this.validateBST(node.right, node.value, max);
+            }
+
+            // Method to check if tree is valid BST
+            isValidBST() {
+                return this.validateBST();
+            }
+
+            inorder() {
+                const result = [];
+                this.inorderRec(this.root, result);
+                return result;
+            }
+
+            preorder() {
+                const result = [];
+                this.preorderRec(this.root, result);
+                return result;
+            }
+
+            preorderRec(node, result) {
+                if (node !== null) {
+                    result.push(node.value);
+                    this.preorderRec(node.left, result);
+                    this.preorderRec(node.right, result);
+                }
+            }
+
+            postorder() {
+                const result = [];
+                this.postorderRec(this.root, result);
+                return result;
+            }
+
+            postorderRec(node, result) {
+                if (node !== null) {
+                    this.postorderRec(node.left, result);
+                    this.postorderRec(node.right, result);
+                    result.push(node.value);
+                }
+            }
+        }
+
+        let bst = new BST();
+        let svg = document.getElementById('treeSvg');
+        let nodeRadius = 25;
+        let levelHeight = 80;
+        let animationSpeed = 800;
+        let isAnimating = false;
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function updateStepInfo(message) {
+            document.getElementById('stepInfo').textContent = message;
+        }
+
+        function toggleButtons(disabled) {
+            const buttons = ['insertBtn', 'deleteBtn', 'clearBtn', 'randomBtn', 'findBtn'];
+            buttons.forEach(id => {
+                document.getElementById(id).disabled = disabled;
+            });
+            isAnimating = disabled;
+        }
+
+        function visualizeTree() {
+            svg.innerHTML = '';
+            if (bst.root === null) return;
+
+            const positions = calculatePositions(bst.root);
+            drawTree(bst.root, positions);
+        }
+
+        function calculatePositions(root) {
+            const positions = new Map();
+            const levels = [];
+            
+            function traverse(node, level) {
+                if (!node) return;
+                
+                if (!levels[level]) levels[level] = [];
+                levels[level].push(node);
+                
+                traverse(node.left, level + 1);
+                traverse(node.right, level + 1);
+            }
+            
+            traverse(root, 0);
+            
+            levels.forEach((levelNodes, level) => {
+                const totalWidth = svg.clientWidth;
+                const spacing = totalWidth / (levelNodes.length + 1);
+                
+                levelNodes.forEach((node, index) => {
+                    positions.set(node, {
+                        x: spacing * (index + 1),
+                        y: 50 + level * levelHeight
+                    });
+                });
+            });
+            
+            return positions;
+        }
+
+        function drawTree(node, positions) {
+            if (!node) return;
+            
+            const pos = positions.get(node);
+            
+            // Draw links first
+            if (node.left) {
+                const leftPos = positions.get(node.left);
+                drawLink(pos.x, pos.y, leftPos.x, leftPos.y);
+                drawTree(node.left, positions);
+            }
+            
+            if (node.right) {
+                const rightPos = positions.get(node.right);
+                drawLink(pos.x, pos.y, rightPos.x, rightPos.y);
+                drawTree(node.right, positions);
+            }
+            
+            // Draw node
+            drawNode(pos.x, pos.y, node.value, node.id);
+        }
+
+        function drawNode(x, y, value, nodeId) {
+            const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            g.setAttribute('class', 'node');
+            g.setAttribute('data-node-id', nodeId);
+            
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', x);
+            circle.setAttribute('cy', y);
+            circle.setAttribute('r', nodeRadius);
+            
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', x);
+            text.setAttribute('y', y);
+            text.textContent = value;
+            
+            g.appendChild(circle);
+            g.appendChild(text);
+            svg.appendChild(g);
+        }
+
+        function drawLink(x1, y1, x2, y2) {
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('class', 'link');
+            line.setAttribute('x1', x1);
+            line.setAttribute('y1', y1);
+            line.setAttribute('x2', x2);
+            line.setAttribute('y2', y2);
+            svg.appendChild(line);
+        }
+
+        function postorderTraversal() {
+            const result = bst.postorder();
+            document.getElementById('traversalResult').textContent = 
+                'Post-order: [' + result.join(', ') + ']';
+        }
+
+        async function insertValue() {
+            if (isAnimating) return;
+            
+            const input = document.getElementById('nodeValue');
+            const value = parseInt(input.value);
+            
+            if (isNaN(value)) {
+                updateStatus('Please enter a valid number');
+                return;
+            }
+            
+            toggleButtons(true);
+            const result = await bst.insert(value);
+            
+            if (result.node === null) {
+                updateStatus(`Value ${value} already exists in the tree (BST doesn't allow duplicates)`);
+            } else {
+                updateStatus(`Successfully inserted ${value} while maintaining BST property`);
+            }
+            
+            // Validate BST property after insertion
+            if (!bst.isValidBST()) {
+                updateStatus(`❌ ERROR: BST property violated after insertion!`);
+            }
+            
+            input.value = '';
+            updateStepInfo('Ready for next operation');
+            toggleButtons(false);
+        }
+
+        async function findValue() {
+            if (isAnimating) return;
+            
+            const input = document.getElementById('nodeValue');
+            const value = parseInt(input.value);
+            
+            if (isNaN(value)) {
+                updateStatus('Please enter a valid number');
+                return;
+            }
+            
+            toggleButtons(true);
+            const result = await bst.find(value);
+            
+            if (result) {
+                updateStatus(`Found ${value} in the tree`);
+            } else {
+                updateStatus(`Value ${value} not found in the tree`);
+            }
+            
+            input.value = '';
+            updateStepInfo('Ready for next operation');
+            visualizeTree(); // Reset highlighting
+            toggleButtons(false);
+        }
+
+        function clearTree() {
+            if (isAnimating) return;
+            
+            bst = new BST();
+            visualizeTree();
+            updateStatus('Tree cleared');
+            updateStatus('Sample BST loaded. Try inserting, deleting, finding values, or validating the BST property!');
+        }
+
+        async function insertRandom() {
+            if (isAnimating) return;
+            
+            const value = Math.floor(Math.random() * 100) + 1;
+            toggleButtons(true);
+            const result = await bst.insert(value);
+            
+            if (result.node === null) {
+                await insertRandom(); // Try again if value exists
+            } else {
+                updateStatus(`Randomly inserted ${value}`);
+            }
+            updateStepInfo('Ready for next operation');
+            toggleButtons(false);
+        }
+
+        function validateBSTButton() {
+            const isValid = bst.isValidBST();
+            const inorderResult = bst.inorder();
+            
+            if (isValid) {
+                updateStatus(`✅ Tree is a valid BST! In-order traversal: [${inorderResult.join(', ')}] (sorted)`);
+                document.getElementById('traversalResult').textContent = 
+                    `BST Validation: ✅ VALID - In-order: [${inorderResult.join(', ')}]`;
+            } else {
+                updateStatus(`❌ Tree violates BST property!`);
+                document.getElementById('traversalResult').textContent = 
+                    `BST Validation: ❌ INVALID - Tree violates BST property`;
+            }
+        }
+
+        function inorderTraversal() {
+            const result = bst.inorder();
+            document.getElementById('traversalResult').textContent = 
+                'In-order: [' + result.join(', ') + '] (should be sorted in BST)';
+        }
+
+        function preorderTraversal() {
+            const result = bst.preorder();
+            document.getElementById('traversalResult').textContent = 
+                'Pre-order: [' + result.join(', ') + ']';
+        }
+
+        function updateStatus(message) {
+            document.getElementById('status').textContent = message;
+        }
+
+        // Speed control
+        document.getElementById('speedSlider').addEventListener('input', function(e) {
+            animationSpeed = parseInt(e.target.value);
+            document.getElementById('speedLabel').textContent = (animationSpeed / 1000).toFixed(1) + 's';
+        });
+
+        // Handle Enter key in input
+        document.getElementById('nodeValue').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !isAnimating) {
+                insertValue();
+            }
+        });
+
+        // Initialize with some sample data
+        async function initializeTree() {
+            const values = [50, 30, 70, 20, 40, 60, 80];
+            for (const value of values) {
+                await bst.insert(value, false); // Insert without animation
+            }
+            visualizeTree();
+            <div class="traversal-buttons">
+                <button class="btn-primary" onclick="inorderTraversal()">In-order</button>
+                <button class="btn-primary" onclick="preorderTraversal()">Pre-order</button>
+                <button class="btn-primary" onclick="postorderTraversal()">Post-order</button>
+                <button class="btn-primary" onclick="validateBSTButton()">Validate BST</button>
+                <button class="btn-primary" onclick="findValue()" id="findBtn">Find Value</button>
+            </div>
+            updateStepInfo('Ready to insert or delete nodes');
+        }
+
+        // Initialize the tree when page loads
+        initializeTree();
+    </script>
+</body>
+</html>

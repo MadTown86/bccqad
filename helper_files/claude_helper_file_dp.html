@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Palindrome DP Matrix</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .matrix {
+            display: inline-block;
+            margin: 10px;
+            border: 2px solid #333;
+        }
+        .cell {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #ccc;
+            display: inline-block;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            vertical-align: top;
+        }
+        .header-cell {
+            background-color: #e3f2fd;
+            font-weight: bold;
+        }
+        .true-cell {
+            background-color: #c8e6c9;
+            color: #2e7d32;
+        }
+        .false-cell {
+            background-color: #ffcdd2;
+            color: #c62828;
+        }
+        .empty-cell {
+            background-color: #f5f5f5;
+        }
+        .current-cell {
+            background-color: #fff59d;
+            border: 3px solid #f57f17;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .step-controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .primary-btn {
+            background-color: #2196f3;
+            color: white;
+        }
+        .primary-btn:hover {
+            background-color: #1976d2;
+        }
+        .secondary-btn {
+            background-color: #9e9e9e;
+            color: white;
+        }
+        .secondary-btn:hover {
+            background-color: #757575;
+        }
+        .code-block {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-line;
+            overflow-x: auto;
+        }
+        .explanation {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .formula {
+            background-color: #fff3e0;
+            border: 1px solid #ff9800;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        .string-display {
+            text-align: center;
+            font-size: 24px;
+            letter-spacing: 5px;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+        .string-char {
+            padding: 5px 10px;
+            border: 2px solid #333;
+            margin: 2px;
+            background-color: #e3f2fd;
+        }
+        .highlight-char {
+            background-color: #ffeb3b !important;
+            border-color: #f57f17 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Longest Palindrome: Dynamic Programming Matrix Visualization</h1>
+        
+        <div class="section">
+            <h2>Understanding the Problem</h2>
+            <p>We want to find the longest palindromic substring in a given string. A palindrome reads the same forwards and backwards (e.g., "aba", "racecar").</p>
+            
+            <div class="explanation">
+                <strong>Key Insight:</strong> A substring s[j...i] is a palindrome if:
+                <ol>
+                    <li>s[j] == s[i] (first and last characters match), AND</li>
+                    <li>s[j+1...i-1] is also a palindrome (the inner substring is a palindrome)</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>The DP Matrix Interpretation</h2>
+            <p><strong>dp[j][i] = True</strong> means the substring from index j to index i is a palindrome</p>
+            <p><strong>Matrix Structure:</strong> Only the upper triangle is used (where j ≤ i)</p>
+            
+            <div class="formula">
+                dp[j][i] = s[j] == s[i] AND (i-j ≤ 2 OR dp[j+1][i-1])
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Step-by-Step Visualization</h2>
+            <div>
+                <label for="input-string">Enter a string: </label>
+                <input type="text" id="input-string" value="babad" maxlength="10">
+                <button onclick="initializeVisualization()" class="primary-btn">Initialize</button>
+            </div>
+            
+            <div class="string-display" id="string-display"></div>
+            
+            <div class="step-controls">
+                <button onclick="prevStep()" class="secondary-btn" id="prev-btn">Previous Step</button>
+                <button onclick="nextStep()" class="primary-btn" id="next-btn">Next Step</button>
+                <button onclick="autoPlay()" class="primary-btn" id="auto-btn">Auto Play</button>
+                <button onclick="reset()" class="secondary-btn">Reset</button>
+            </div>
+            
+            <div id="step-info" class="explanation"></div>
+            
+            <div id="matrix-container"></div>
+            
+            <div id="result-info" class="explanation" style="display: none;"></div>
+        </div>
+
+        <div class="section">
+            <h2>Code Breakdown</h2>
+            <div class="code-block">def longestPalindrome3(self, s: str) -> str:
+    if len(s) <= 1:
+        return s
+    
+    Max_Len = 1
+    Max_Str = s[0]
+    
+    # Initialize DP matrix
+    dp = [[False for _ in range(len(s))] for _ in range(len(s))]
+    
+    # Fill diagonal (single characters are palindromes)
+    for i in range(len(s)):
+        dp[i][i] = True
+        
+        # Check all substrings ending at position i
+        for j in range(i):
+            # Check if substring s[j:i+1] is a palindrome
+            if s[j] == s[i] and (i-j <= 2 or dp[j+1][i-1]):
+                dp[j][i] = True
+                
+                # Update longest palindrome if current is longer
+                if i-j+1 > Max_Len:
+                    Max_Len = i-j+1
+                    Max_Str = s[j:i+1]
+    
+    return Max_Str</div>
+        </div>
+
+        <div class="section">
+            <h2>Key Concepts</h2>
+            <ul>
+                <li><strong>Base Cases:</strong> Single characters (diagonal) are always palindromes</li>
+                <li><strong>Two Characters:</strong> If i-j <= 2 and s[j] == s[i], it's a palindrome</li>
+                <li><strong>Longer Strings:</strong> Check if ends match AND inner substring is a palindrome</li>
+                <li><strong>Bottom-Up:</strong> We build solutions for longer substrings using shorter ones</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let currentString = "babad";
+        let dp = [];
+        let steps = [];
+        let currentStep = 0;
+        let maxLen = 1;
+        let maxStr = "";
+        let autoInterval = null;
+
+        function initializeVisualization() {
+            currentString = document.getElementById('input-string').value || "babad";
+            currentStep = 0;
+            maxLen = 1;
+            maxStr = currentString[0];
+            clearInterval(autoInterval);
+            
+            const n = currentString.length;
+            dp = Array(n).fill().map(() => Array(n).fill(false));
+            steps = [];
+            
+            // Generate steps
+            generateSteps();
+            
+            // Display initial state
+            displayString();
+            displayMatrix();
+            updateStepInfo();
+            updateButtons();
+        }
+
+        function generateSteps() {
+            const n = currentString.length;
+            
+            // Step 0: Initialize diagonal
+            steps.push({
+                type: 'init',
+                description: 'Initialize: All single characters are palindromes (diagonal = true)',
+                i: -1,
+                j: -1,
+                matrixState: dp.map(row => [...row])
+            });
+            
+            for (let i = 0; i < n; i++) {
+                dp[i][i] = true;
+            }
+            
+            steps[0].matrixState = dp.map(row => [...row]);
+            
+            // Generate steps for the main algorithm
+            for (let i = 1; i < n; i++) {
+                for (let j = 0; j < i; j++) {
+                    const prevState = dp.map(row => [...row]);
+                    
+                    if (currentString[j] === currentString[i] && (i - j <= 2 || dp[j + 1][i - 1])) {
+                        dp[j][i] = true;
+                        if (i - j + 1 > maxLen) {
+                            maxLen = i - j + 1;
+                            maxStr = currentString.substring(j, i + 1);
+                        }
+                        
+                        steps.push({
+                            type: 'check',
+                            description: `Checking s[${j}:${i+1}] = "${currentString.substring(j, i+1)}"`,
+                            details: `s[${j}]='${currentString[j]}' == s[${i}]='${currentString[i]}' ✓${i-j <= 2 ? ' (length ≤ 3)' : ` AND dp[${j+1}][${i-1}]=true`} → PALINDROME`,
+                            i: i,
+                            j: j,
+                            matrixState: dp.map(row => [...row]),
+                            result: 'palindrome',
+                            newMaxLen: maxLen,
+                            newMaxStr: maxStr
+                        });
+                    } else {
+                        steps.push({
+                            type: 'check',
+                            description: `Checking s[${j}:${i+1}] = "${currentString.substring(j, i+1)}"`,
+                            details: currentString[j] !== currentString[i] 
+                                ? `s[${j}]='${currentString[j]}' != s[${i}]='${currentString[i]}' ✗ → NOT palindrome`
+                                : `s[${j}]='${currentString[j]}' == s[${i}]='${currentString[i]}' ✓ BUT dp[${j+1}][${i-1}]=false → NOT palindrome`,
+                            i: i,
+                            j: j,
+                            matrixState: prevState,
+                            result: 'not_palindrome'
+                        });
+                    }
+                }
+            }
+            
+            steps.push({
+                type: 'final',
+                description: `Algorithm complete! Longest palindrome: "${maxStr}" (length: ${maxLen})`,
+                i: -1,
+                j: -1,
+                matrixState: dp.map(row => [...row]),
+                finalResult: true
+            });
+        }
+
+        function displayString() {
+            const container = document.getElementById('string-display');
+            const step = steps[currentStep];
+            container.innerHTML = currentString.split('').map((char, index) => {
+                const isHighlighted = step && (index === step.i || index === step.j);
+                return `<span class="string-char ${isHighlighted ? 'highlight-char' : ''}">${char}</span>`;
+            }).join('');
+        }
+
+        function displayMatrix() {
+            const container = document.getElementById('matrix-container');
+            const n = currentString.length;
+            const step = steps[currentStep];
+            const matrix = step ? step.matrixState : dp;
+            
+            let html = '<div class="matrix">';
+            
+            // Header row
+            html += '<div class="cell header-cell"></div>';
+            for (let i = 0; i < n; i++) {
+                html += `<div class="cell header-cell">${i}</div>`;
+            }
+            html += '<br>';
+            
+            // Matrix rows
+            for (let j = 0; j < n; j++) {
+                html += `<div class="cell header-cell">${j}</div>`;
+                for (let i = 0; i < n; i++) {
+                    let cellClass = 'cell ';
+                    if (i < j) {
+                        cellClass += 'empty-cell';
+                        html += `<div class="${cellClass}"></div>`;
+                    } else {
+                        const isCurrentCell = step && step.i === i && step.j === j;
+                        cellClass += isCurrentCell ? 'current-cell' : (matrix[j][i] ? 'true-cell' : 'false-cell');
+                        html += `<div class="${cellClass}">${matrix[j][i] ? 'T' : 'F'}</div>`;
+                    }
+                }
+                html += '<br>';
+            }
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function updateStepInfo() {
+            const container = document.getElementById('step-info');
+            const step = steps[currentStep];
+            
+            if (!step) return;
+            
+            let html = `<strong>Step ${currentStep + 1}/${steps.length}:</strong> ${step.description}`;
+            
+            if (step.details) {
+                html += `<br><em>${step.details}</em>`;
+            }
+            
+            if (step.newMaxLen) {
+                html += `<br><strong>New longest palindrome found:</strong> "${step.newMaxStr}" (length: ${step.newMaxLen})`;
+            }
+            
+            container.innerHTML = html;
+            
+            // Show final result
+            const resultContainer = document.getElementById('result-info');
+            if (step.finalResult) {
+                resultContainer.innerHTML = `<strong>Final Result:</strong> The longest palindromic substring is <strong>"${maxStr}"</strong> with length <strong>${maxLen}</strong>`;
+                resultContainer.style.display = 'block';
+            } else {
+                resultContainer.style.display = 'none';
+            }
+        }
+
+        function updateButtons() {
+            document.getElementById('prev-btn').disabled = currentStep === 0;
+            document.getElementById('next-btn').disabled = currentStep === steps.length - 1;
+        }
+
+        function nextStep() {
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                displayString();
+                displayMatrix();
+                updateStepInfo();
+                updateButtons();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                displayString();
+                displayMatrix();
+                updateStepInfo();
+                updateButtons();
+            }
+        }
+
+        function autoPlay() {
+            if (autoInterval) {
+                clearInterval(autoInterval);
+                autoInterval = null;
+                document.getElementById('auto-btn').textContent = 'Auto Play';
+                return;
+            }
+            
+            document.getElementById('auto-btn').textContent = 'Stop Auto';
+            autoInterval = setInterval(() => {
+                if (currentStep < steps.length - 1) {
+                    nextStep();
+                } else {
+                    clearInterval(autoInterval);
+                    autoInterval = null;
+                    document.getElementById('auto-btn').textContent = 'Auto Play';
+                }
+            }, 1500);
+        }
+
+        function reset() {
+            currentStep = 0;
+            clearInterval(autoInterval);
+            autoInterval = null;
+            document.getElementById('auto-btn').textContent = 'Auto Play';
+            displayString();
+            displayMatrix();
+            updateStepInfo();
+            updateButtons();
+        }
+
+        // Initialize on page load
+        window.onload = function() {
+            initializeVisualization();
+        };
+    </script>
+</body>
+</html>

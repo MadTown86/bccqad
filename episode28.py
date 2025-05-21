@@ -26,101 +26,117 @@ Deletion:
 6. If the node to be deleted is the root, handle it separately to ensure the tree remains valid.
 """
 
-class Node:
-    def __init__(self, key):
-        self.left = None
-        self.right = None
-        self.val = key
+class MyBST:
+    class Node:
+        def __init__(self, val):
+            self.val = val
+            self.left = None
+            self.right = None
 
-def insert(root, key):
-    # If the tree is empty, return a new node
-    if root is None:
-        return Node(key)
+    def __init__(self):
+        self.root = None
 
-    # Otherwise, recur down the tree
-    if key < root.val:
-        root.left = insert(root.left, key)
-    else:
-        root.right = insert(root.right, key)
-
-    # Return the unchanged node pointer
-    return root
-
-def delete_node(root, key):
-    # Base case
-    if root is None:
+    def insert(self, value):
+        if not self.root:
+            self.root = self.Node(value)
+            print("Inserted Root")
+            return self.root
+        
+        def traversal(node, value):
+            if not node:
+                return self.Node(value)
+            if node.val < value:
+                node.right = traversal(node.right, value)
+            else:
+                node.left = traversal(node.left, value)
+            return node
+        
+        return traversal(self.root, value)
+    
+    def get_min_value_node(self, node):
+        get_min_node = node.val
+        current = node
+        while current.left:
+            current = current.left
+        return current
+    
+    def delete(self, root, val):
+        if not root:
+            return root
+        if val < root.val:
+            root.left = self.delete(root.left, val)
+        elif val > root.val:
+            root.right = self.delete(root.right, val)
+        else:
+            if not root.left:
+                return root.right
+            elif not root.right:
+                return root.left
+            temp = self.get_min_value_node(root.right)
+            root.val = temp.val
+            root.right = self.delete(root.right, temp.val)
         return root
+    
 
-    # Recur down the tree
-    if key < root.val:
-        root.left = delete_node(root.left, key)
-    elif key > root.val:
-        root.right = delete_node(root.right, key)
-    else:
-        # Node with only one child or no child
-        if root.left is None:
-            return root.right
-        elif root.right is None:
-            return root.left
+    
+    def print_tree(self, func: str = "inorder"):
+        if not self.root:
+            print("No Tree")
+            return
+        if func == "inorder":
+            print("\nInOrder")
+            def inorder(root):
+                if not root:
+                    return
+                left_result = inorder(root.left)
+                if left_result:
+                    return left_result
+                print(root.val)
+                right_result = inorder(root.right)
+                if right_result:
+                    return right_result
+            
+            return inorder(self.root)
 
-        # Node with two children: Get the inorder successor (smallest in the right subtree)
-        temp = min_value_node(root.right)
-
-        # Copy the inorder successor's content to this node
-        root.val = temp.val
-
-        # Delete the inorder successor
-        root.right = delete_node(root.right, temp.val)
-
-    return root
-
-def min_value_node(node):
-    current = node
-
-    # Loop down to find the leftmost leaf
-    while current.left is not None:
-        current = current.left
-
-    return current
-
-def inorder_traversal(node):
-    if node:
-        inorder_traversal(node.left)
-        print(node.val, end=' ')
-        inorder_traversal(node.right)
-
+        elif func == "preorder":
+            print("\nPreOrder")
+            def preorder(root):
+                if not root:
+                    return
+                print(root.val)
+                left_result = preorder(root.left)
+                if left_result:
+                    return left_result
+                right_result = preorder(root.right)
+                if right_result:
+                    return right_result
+            
+            return preorder(self.root)
+        
+        elif func == "postorder":
+            print("\nPostOrder")
+            def postorder(root):
+                    if root is None:
+                        return None
+                    left_result = postorder(root.left)
+                    if left_result:
+                        return left_result
+                    right_result = postorder(root.right)
+                    if right_result:
+                        return right_result
+                    print(root.val)
+            
+            return postorder(self.root)
+        
 if __name__ == "__main__":
-    # Create the root node
-    root = Node(10)
+    B = MyBST()
+    values = [50, 30, 20, 40, 70, 60, 80]
+    for val in values:  
+        B.insert(val)
     
-    # Insert nodes
-    root.left = Node(5)
-    root.right = Node(15)
-    root.left.left = Node(3)
-    root.left.right = Node(7)
-    root.right.right = Node(20)
+    print("\n")
+    B.print_tree("inorder")
+    B.delete(B.root, 70)
+    B.print_tree("inorder")
 
-    # Insert a new node
-    root = insert(root, 6)
 
-    # Print the inorder traversal of the tree
-    def inorder_traversal(node):
-        if node:
-            inorder_traversal(node.left)
-            print(node.val, end=' ')
-            inorder_traversal(node.right)
-    inorder_traversal(root)
-    print()
-
-    # Delete a node
-    root = delete_node(root, 5)
-    # Print the inorder traversal of the tree
-    def inorder_traversal(node):
-        if node:
-            inorder_traversal(node.left)
-            print(node.val, end=' ')
-            inorder_traversal(node.right)
-    inorder_traversal(root)
-    print()
-
-    

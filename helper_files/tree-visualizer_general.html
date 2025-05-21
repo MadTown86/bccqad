@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tree Visualizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .input-container {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .visualization-container {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            height: 500px;
+            position: relative;
+            overflow: auto;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        input, select, button {
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        
+        input {
+            width: 100%;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .error {
+            color: red;
+            margin-top: 5px;
+        }
+        
+        .node {
+            width: 40px;
+            height: 40px;
+            background-color: #3498db;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            font-weight: bold;
+            border: 2px solid #2980b9;
+            transition: all 0.3s ease;
+        }
+        
+        .edge {
+            position: absolute;
+            background-color: #000000;
+            height: 3px;
+            transform-origin: 0 0;
+            z-index: -1;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Interactive Tree Visualizer</h1>
+        
+        <div class="input-container">
+            <label for="integers">Enter integers (comma-separated):</label>
+            <input type="text" id="integers" placeholder="e.g., 10, 5, 15, 3, 7, 12, 20">
+            
+            <label for="tree-type">Select Tree Type:</label>
+            <select id="tree-type">
+                <option value="general">General Tree</option>
+                <option value="binary">Binary Tree</option>
+                <option value="bst">Binary Search Tree</option>
+                <option value="ordered">Ordered Binary Tree</option>
+            </select>
+            
+            <button id="submit-btn">Visualize Tree</button>
+            <div id="error-message" class="error"></div>
+        </div>
+        
+        <div class="visualization-container" id="visualization">
+            <div id="tree-container"></div>
+        </div>
+    </div>
+
+    <script>
+        class TreeNode {
+            constructor(value) {
+                this.value = value;
+                this.children = [];
+                this.x = 0;
+                this.y = 0;
+                this.level = 0;
+                this.index = 0;
+            }
+        }
+        
+        class BinaryTreeNode {
+            constructor(value) {
+                this.value = value;
+                this.left = null;
+                this.right = null;
+                this.x = 0;
+                this.y = 0;
+                this.level = 0;
+            }
+        }
+        
+        // Function to create a general tree from array
+        function createGeneralTree(values) {
+            if (values.length === 0) return null;
+            
+            const root = new TreeNode(values[0]);
+            const queue = [root];
+            let i = 1;
+            let childrenPerNode = 2; // Default: binary-like structure
+            
+            while (queue.length > 0 && i < values.length) {
+                const current = queue.shift();
+                
+                // Add children
+                for (let j = 0; j < childrenPerNode && i < values.length; j++) {
+                    const child = new TreeNode(values[i]);
+                    current.children.push(child);
+                    queue.push(child);
+                    i++;
+                }
+            }
+            
+            return root;
+        }
+        
+        // Function to create a binary tree from array
+        function createBinaryTree(values) {
+            if (values.length === 0) return null;
+            
+            const root = new BinaryTreeNode(values[0]);
+            const queue = [root];
+            let i = 1;
+            
+            while (queue.length > 0 && i < values.length) {
+                const current = queue.shift();
+                
+                // Left child
+                if (i < values.length) {
+                    current.left = new BinaryTreeNode(values[i]);
+                    queue.push(current.left);
+                    i++;
+                }
+                
+                // Right child
+                if (i < values.length) {
+                    current.right = new BinaryTreeNode(values[i]);
+                    queue.push(current.right);
+                    i++;
+                }
+            }
+            
+            return root;
+        }
+        
+        // Function to create a binary search tree from array
+        function createBST(values) {
+            if (values.length === 0) return null;
+            
+            // Check if values are in ascending or descending order (or nearly so)
+            let ascending = true;
+            let descending = true;
+            
+            for (let i = 1; i < values.length; i++) {
+                if (values[i] <= values[i-1]) ascending = false;
+                if (values[i] >= values[i-1]) descending = false;
+            }
+            
+            // If the array is already sorted (or nearly sorted), create a balanced tree
+            if (ascending || descending) {
+                console.log("Detected ordered sequence. Creating balanced BST.");
+                // If descending, reverse to get ascending
+                const sortedValues = descending ? [...values].reverse() : [...values];
+                return createBalancedBST(sortedValues, 0, sortedValues.length - 1);
+            } else if (values.length > 7) {
+                // For large arrays that aren't obviously sorted, still balance them
+                // to avoid degenerate trees
+                console.log("Large array detected. Creating balanced BST from sorted values.");
+                const sortedValues = [...values].sort((a, b) => a - b);
+                return createBalancedBST(sortedValues, 0, sortedValues.length - 1);
+            }
+            
+            // For small arrays that aren't obviously sorted, create a traditional BST
+            // with a randomized insertion order to improve balance
+            console.log("Creating standard BST with randomized insertion order.");
+            const shuffled = [...values].sort(() => Math.random() - 0.5);
+            
+            const root = new BinaryTreeNode(shuffled[0]);
+            
+            for (let i = 1; i < shuffled.length; i++) {
+                insertIntoBST(root, shuffled[i]);
+            }
+            
+            return root;
+        }
+        
+        // Function to insert a value into BST
+        function insertIntoBST(root, value) {
+            if (value < root.value) {
+                if (root.left === null) {
+                    root.left = new BinaryTreeNode(value);
+                } else {
+                    insertIntoBST(root.left, value);
+                }
+            } else {
+                if (root.right === null) {
+                    root.right = new BinaryTreeNode(value);
+                } else {
+                    insertIntoBST(root.right, value);
+                }
+            }
+        }
+        
+        // Function to create an ordered binary tree from array
+        function createOrderedBinaryTree(values) {
+            // Sort the values first
+            const sortedValues = [...values].sort((a, b) => a - b);
+            
+            // Create a balanced BST from sorted array
+            return createBalancedBST(sortedValues, 0, sortedValues.length - 1);
+        }
+        
+        // Helper function to create balanced BST from sorted array
+        function createBalancedBST(sortedValues, start, end) {
+            if (start > end) return null;
+            
+            const mid = Math.floor((start + end) / 2);
+            const root = new BinaryTreeNode(sortedValues[mid]);
+            
+            root.left = createBalancedBST(sortedValues, start, mid - 1);
+            root.right = createBalancedBST(sortedValues, mid + 1, end);
+            
+            return root;
+        }
+        
+        // Function to calculate positions for general tree
+        function calculateGeneralTreePositions(root) {
+            if (!root) return;
+            
+            const levelMap = {};
+            
+            // First pass: assign level and count nodes at each level
+            const assignLevels = (node, level, index) => {
+                if (!node) return;
+                
+                node.level = level;
+                node.index = index;
+                
+                if (!levelMap[level]) {
+                    levelMap[level] = { count: 0, nodes: [] };
+                }
+                
+                levelMap[level].count++;
+                levelMap[level].nodes.push(node);
+                
+                for (let i = 0; i < node.children.length; i++) {
+                    assignLevels(node.children[i], level + 1, i);
+                }
+            };
+            
+            assignLevels(root, 0, 0);
+            
+            // Get the maximum number of nodes at any level
+            let maxNodesAtLevel = 0;
+            for (let level in levelMap) {
+                maxNodesAtLevel = Math.max(maxNodesAtLevel, levelMap[level].count);
+            }
+            
+            // Calculate the total width needed
+            const totalWidth = maxNodesAtLevel * 60;
+            
+            // Second pass: assign x and y coordinates
+            for (let level in levelMap) {
+                const nodesAtLevel = levelMap[level].nodes;
+                const levelWidth = nodesAtLevel.length * 60;
+                const startX = (totalWidth - levelWidth) / 2;
+                
+                for (let i = 0; i < nodesAtLevel.length; i++) {
+                    const node = nodesAtLevel[i];
+                    node.x = startX + i * 60 + 30;
+                    node.y = level * 80 + 40;
+                }
+            }
+        }
+        
+        // Function to calculate positions for binary tree
+        function calculateBinaryTreePositions(root) {
+            if (!root) return;
+            
+            // Find the height of the tree
+            const height = findHeight(root);
+            
+            // Calculate the maximum width
+            const maxWidth = Math.pow(2, height - 1) * 60;
+            
+            // Assign coordinates
+            assignCoordinates(root, 0, maxWidth, 0, 40);
+        }
+        
+        // Helper function to find height of binary tree
+        function findHeight(node) {
+            if (!node) return 0;
+            return 1 + Math.max(
+                findHeight(node.left),
+                findHeight(node.right)
+            );
+        }
+        
+        // Helper function to assign coordinates to binary tree nodes
+        function assignCoordinates(node, left, right, level, ySpacing) {
+            if (!node) return;
+            
+            const x = (left + right) / 2;
+            const y = level * ySpacing + 40;
+            
+            node.x = x;
+            node.y = y;
+            node.level = level;
+            
+            // Recursively assign coordinates to children
+            if (node.left) {
+                assignCoordinates(node.left, left, x, level + 1, ySpacing);
+            }
+            
+            if (node.right) {
+                assignCoordinates(node.right, x, right, level + 1, ySpacing);
+            }
+        }
+        
+        // Function to render general tree
+        function renderGeneralTree(root, container) {
+            if (!root) return;
+            
+            const nodes = [];
+            const edges = [];
+            
+            // Helper function to collect nodes and edges
+            const collectNodesAndEdges = (node) => {
+                if (!node) return;
+                
+                nodes.push(node);
+                
+                for (let child of node.children) {
+                    edges.push({
+                        from: node,
+                        to: child
+                    });
+                    
+                    collectNodesAndEdges(child);
+                }
+            };
+            
+            collectNodesAndEdges(root);
+            
+            // Create nodes
+            for (let node of nodes) {
+                const nodeElement = document.createElement('div');
+                nodeElement.className = 'node';
+                nodeElement.textContent = node.value;
+                nodeElement.style.left = `${node.x}px`;
+                nodeElement.style.top = `${node.y}px`;
+                container.appendChild(nodeElement);
+            }
+            
+            // Create edges - draw them first so they appear behind nodes
+            for (let edge of edges) {
+                const edgeElement = document.createElement('div');
+                edgeElement.className = 'edge';
+                
+                const x1 = edge.from.x + 20;
+                const y1 = edge.from.y + 20;
+                const x2 = edge.to.x + 20;
+                const y2 = edge.to.y + 20;
+                
+                const length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+                const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+                
+                edgeElement.style.width = `${length}px`;
+                edgeElement.style.left = `${x1}px`;
+                edgeElement.style.top = `${y1}px`;
+                edgeElement.style.transform = `rotate(${angle}deg)`;
+                
+                container.appendChild(edgeElement);
+            }
+        }
+        
+        // Function to render binary tree
+        function renderBinaryTree(root, container) {
+            if (!root) return;
+            
+            const nodes = [];
+            const edges = [];
+            
+            // Helper function to collect nodes and edges
+            const collectNodesAndEdges = (node) => {
+                if (!node) return;
+                
+                nodes.push(node);
+                
+                if (node.left) {
+                    edges.push({
+                        from: node,
+                        to: node.left
+                    });
+                    collectNodesAndEdges(node.left);
+                }
+                
+                if (node.right) {
+                    edges.push({
+                        from: node,
+                        to: node.right
+                    });
+                    collectNodesAndEdges(node.right);
+                }
+            };
+            
+            collectNodesAndEdges(root);
+            
+            // Create edges first (so they appear behind nodes)
+            for (let edge of edges) {
+                const x1 = edge.from.x + 20;
+                const y1 = edge.from.y + 20;
+                const x2 = edge.to.x + 20;
+                const y2 = edge.to.y + 20;
+                
+                // Draw lines with SVG for better visibility
+                const svgLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                svgLine.setAttribute("x1", x1);
+                svgLine.setAttribute("y1", y1);
+                svgLine.setAttribute("x2", x2);
+                svgLine.setAttribute("y2", y2);
+                svgLine.setAttribute("stroke", "black");
+                svgLine.setAttribute("stroke-width", "2");
+                
+                // Create an SVG container if it doesn't exist
+                let svgContainer = document.getElementById("svg-lines");
+                if (!svgContainer) {
+                    svgContainer = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                    svgContainer.id = "svg-lines";
+                    svgContainer.style.position = "absolute";
+                    svgContainer.style.top = "0";
+                    svgContainer.style.left = "0";
+                    svgContainer.style.width = "100%";
+                    svgContainer.style.height = "100%";
+                    svgContainer.style.zIndex = "0";
+                    container.appendChild(svgContainer);
+                }
+                
+                svgContainer.appendChild(svgLine);
+            }
+            
+            // Create nodes
+            for (let node of nodes) {
+                const nodeElement = document.createElement('div');
+                nodeElement.className = 'node';
+                nodeElement.textContent = node.value;
+                nodeElement.style.left = `${node.x}px`;
+                nodeElement.style.top = `${node.y}px`;
+                container.appendChild(nodeElement);
+            }
+        }
+        
+        // Function to visualize tree
+        function visualizeTree() {
+            const integerInput = document.getElementById('integers').value;
+            const treeType = document.getElementById('tree-type').value;
+            const errorMsg = document.getElementById('error-message');
+            const treeContainer = document.getElementById('tree-container');
+            
+            // Clear previous visualization and errors
+            treeContainer.innerHTML = '';
+            errorMsg.textContent = '';
+            
+            // Parse input
+            const values = integerInput.split(',').map(val => {
+                const num = parseInt(val.trim());
+                return isNaN(num) ? null : num;
+            }).filter(val => val !== null);
+            
+            // Validate input
+            if (values.length === 0) {
+                errorMsg.textContent = 'Please enter valid integers separated by commas.';
+                return;
+            }
+            
+            // Add a debug message to help diagnose issues
+            console.log(`Visualizing ${treeType} tree with values: ${values}`);
+            
+            let root;
+            
+            // Create appropriate tree based on selection
+            switch (treeType) {
+                case 'general':
+                    root = createGeneralTree(values);
+                    calculateGeneralTreePositions(root);
+                    renderGeneralTree(root, treeContainer);
+                    break;
+                    
+                case 'binary':
+                    root = createBinaryTree(values);
+                    calculateBinaryTreePositions(root);
+                    renderBinaryTree(root, treeContainer);
+                    break;
+                    
+                case 'bst':
+                    root = createBST(values);
+                    calculateBinaryTreePositions(root);
+                    renderBinaryTree(root, treeContainer);
+                    break;
+                    
+                case 'ordered':
+                    root = createOrderedBinaryTree(values);
+                    calculateBinaryTreePositions(root);
+                    renderBinaryTree(root, treeContainer);
+                    break;
+                    
+                default:
+                    errorMsg.textContent = 'Invalid tree type selected.';
+                    return;
+            }
+            
+            // Add a debug message after rendering
+            console.log('Tree visualization complete.');
+        }
+        
+        // Event listener for submit button
+        document.getElementById('submit-btn').addEventListener('click', visualizeTree);
+        
+        // Initialize with default example
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('integers').value = '10, 5, 15, 3, 7, 12, 20';
+        });
+    </script>
+</body>
+</html>

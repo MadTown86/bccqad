@@ -63,10 +63,10 @@ Episode 21: BCC21 - Intermediate Python Tutorial - Introduction to Data Structur
 Episode 22: BCC22 - Intermediate Python Tutorial - Memory, Array and Python List
 Episode 23: BCC23 - Intermediate Python Tutorial - Linked Lists
 Episode 24: BCC24 - Intermediate Python Tutorial - Stacks and Queues
-Episode ##: BCC## - Intermediate Python Tutorial - Trees
-Episode ##: BCC## - Intermediate Python Tutorial - Priority Queues
-Episode ##: BCC## - Intermediate Python Tutorial - Mappings/Dictionaries Expanded
-Episode ##: BCC## - Intermediate Python Tutorial - Sorting and Selecting
+Episode 25: BCC25 - Intermediate Python Tutorial - Trees
+Episode 26: BCC26 - Intermediate Python Tutorial - Recursion - Tree Traversals
+Episode 27: BCC27 - Intermediate Python Tutorial - Tree Traversals - Breadth First Search, Depth First Search
+Episode 28: BCC28 - Intermediate Python Tutorial - BST (Binary Search Tree) - Insertion and Deletion
 Episode ##: BCC## - Intermediate Python Tutorial - Text Processing
 Episode ##: BCC## - Intermediate Python Tutorial - Graph Algorithms
 Episode ##: BCC## - Intermediate Python Tutorial - Memory Management and B-Trees
