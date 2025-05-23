@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upvote Eruption</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #222;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: monospace;
+        }
+        canvas {
+            border: 2px solid #444;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+        .controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+        }
+        button {
+            background: #444;
+            color: white;
+            border: 1px solid #666;
+            padding: 5px 10px;
+            margin: 5px;
+            cursor: pointer;
+            font-family: monospace;
+        }
+        button:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <button onclick="restartAnimation()">Restart Animation</button>
+        <div>Multi-Arrow Upvote Eruption - 500x500 Pixel Art</div>
+    </div>
+    <canvas id="canvas" width="500" height="500"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = false;
+
+        let frame = 0;
+        let animationSpeed = 0.15;
+        let arrows = [
+            { x: 250, y: 500, delay: 0, size: 1.0, colorSet: 1 },      // Main arrow (center)
+            { x: 150, y: 500, delay: 15, size: 0.8, colorSet: 2 },     // Left arrow (smaller)
+            { x: 350, y: 500, delay: 25, size: 0.7, colorSet: 3 },     // Right arrow (smaller)
+            { x: 100, y: 500, delay: 40, size: 0.6, colorSet: 4 },     // Far left (smallest)
+            { x: 400, y: 500, delay: 35, size: 0.65, colorSet: 5 }     // Far right (small)
+        ];
+        let dirtParticles = [];
+        
+        // Color palette
+        const colors = {
+            sky: '#87CEEB',
+            ground: '#8B4513',
+            dirt: '#654321',
+            grass: '#228B22',
+            upvote1: '#FF4500',      // Orange (Reddit upvote)
+            upvote1Dark: '#CC3300',
+            upvote1Light: '#FF6633',
+            upvote2: '#9146FF',      // Purple (Twitch)
+            upvote2Dark: '#6441A5',
+            upvote2Light: '#B366FF',
+            upvote3: '#00D4AA',      // Teal
+            upvote3Dark: '#00A085',
+            upvote3Light: '#33DDBB',
+            upvote4: '#FFD700',      // Gold
+            upvote4Dark: '#B8860B',
+            upvote4Light: '#FFED4E',
+            upvote5: '#FF1744',      // Red
+            upvote5Dark: '#C62828',
+            upvote5Light: '#FF5177'
+        };
+
+        // Create dirt particles
+        function createDirtParticles(x, y, count) {
+            for (let i = 0; i < count; i++) {
+                dirtParticles.push({
+                    x: x + (Math.random() - 0.5) * 40,
+                    y: y + Math.random() * 20,
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: Math.random() * -3 - 1,
+                    size: Math.random() * 3 + 1,
+                    life: 30 + Math.random() * 20
+                });
+            }
+        }
+
+        function drawPixelRect(x, y, width, height, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(Math.floor(x), Math.floor(y), width, height);
+        }
+
+        function drawBackground() {
+            // Sky
+            drawPixelRect(0, 0, 500, 300, colors.sky);
+            
+            // Ground
+            drawPixelRect(0, 300, 500, 200, colors.ground);
+            
+            // Grass pixels on surface
+            for (let x = 0; x < 500; x += 4) {
+                if (Math.random() > 0.7) {
+                    drawPixelRect(x, 296, 4, 8, colors.grass);
+                }
+            }
+        }
+
+        function drawUpvote(x, baseY, scale, colorSet) {
+            // Only draw if upvote is visible
+            if (baseY < 500) {
+                // Get colors for this arrow
+                const mainColor = colors[`upvote${colorSet}`];
+                const darkColor = colors[`upvote${colorSet}Dark`];
+                const lightColor = colors[`upvote${colorSet}Light`];
+                
+                // Scale dimensions
+                const arrowWidth = 100 * scale;
+                const arrowHeight = 120 * scale;
+                const stemWidth = 40 * scale;
+                const stemHeight = 80 * scale;
+                const headHeight = 60 * scale;
+                const headWidth = arrowWidth;
+                
+                const upvoteX = x - arrowWidth / 2;
+                
+                // Draw the stem first
+                drawPixelRect(upvoteX + (arrowWidth - stemWidth) / 2, baseY - stemHeight, stemWidth, stemHeight, mainColor);
+                
+                // Draw the arrow head as a triangle using rectangles (pointing up)
+                for (let i = 0; i < headHeight; i += 4) {
+                    const width = Math.max(8 * scale, 8 * scale + (i * 1.5 * scale));
+                    const rectX = upvoteX + (arrowWidth - width) / 2;
+                    const rectY = baseY - stemHeight - headHeight + i;
+                    
+                    if (rectY >= 0 && width <= headWidth) {
+                        drawPixelRect(rectX, rectY, width, 4 * scale, mainColor);
+                    }
+                }
+                
+                // Add shadow/depth effects
+                ctx.fillStyle = darkColor;
+                
+                // Shadow on right side of stem
+                ctx.fillRect(upvoteX + (arrowWidth - stemWidth) / 2 + stemWidth - 8 * scale, baseY - stemHeight, 8 * scale, stemHeight);
+                
+                // Shadow on arrow head (pointing up)
+                for (let i = 0; i < headHeight; i += 4) {
+                    const width = Math.max(2 * scale, (8 * scale + (i * 1.5 * scale)) * 0.15);
+                    const totalWidth = Math.min(8 * scale + (i * 1.5 * scale), headWidth);
+                    const rectX = upvoteX + (arrowWidth + totalWidth) / 2 - width;
+                    const rectY = baseY - stemHeight - headHeight + i;
+                    
+                    if (rectY >= 0 && totalWidth <= headWidth) {
+                        ctx.fillRect(rectX, rectY, width, 4 * scale);
+                    }
+                }
+                
+                // Add highlight on left side
+                ctx.fillStyle = lightColor;
+                
+                // Highlight on left side of stem
+                ctx.fillRect(upvoteX + (arrowWidth - stemWidth) / 2, baseY - stemHeight, 6 * scale, stemHeight);
+                
+                // Highlight on arrow head (pointing up)
+                for (let i = 0; i < headHeight; i += 4) {
+                    const width = Math.max(2 * scale, (8 * scale + (i * 1.5 * scale)) * 0.1);
+                    const totalWidth = Math.min(8 * scale + (i * 1.5 * scale), headWidth);
+                    const rectX = upvoteX + (arrowWidth - totalWidth) / 2;
+                    const rectY = baseY - stemHeight - headHeight + i;
+                    
+                    if (rectY >= 0 && totalWidth <= headWidth) {
+                        ctx.fillRect(rectX, rectY, width, 4 * scale);
+                    }
+                }
+            }
+        }
+
+        function updateDirtParticles() {
+            for (let i = dirtParticles.length - 1; i >= 0; i--) {
+                const particle = dirtParticles[i];
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                particle.vy += 0.1; // gravity
+                particle.life--;
+                
+                if (particle.life <= 0 || particle.y > 500) {
+                    dirtParticles.splice(i, 1);
+                } else {
+                    const alpha = particle.life / 50;
+                    ctx.fillStyle = `rgba(101, 67, 33, ${alpha})`;
+                    ctx.fillRect(particle.x, particle.y, particle.size, particle.size);
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, 500, 500);
+            
+            drawBackground();
+            
+            // Multiple upvote eruption animation
+            arrows.forEach(arrow => {
+                const arrowFrame = frame - arrow.delay;
+                
+                if (arrowFrame >= 0) {
+                    if (arrowFrame < 60) {
+                        // Arrow rising from ground
+                        arrow.y = 500 - (arrowFrame * 4);
+                        
+                        // Create dirt particles as arrow emerges
+                        if (arrowFrame % 4 === 0 && arrowFrame < 50) {
+                            createDirtParticles(arrow.x, 300, 2);
+                        }
+                    } else if (arrowFrame < 80) {
+                        // Slight bounce
+                        arrow.y = 260 + Math.sin((arrowFrame - 60) * 0.3) * 5;
+                    } else {
+                        // Settle
+                        arrow.y = 260;
+                    }
+                }
+                
+                // Draw the arrow
+                if (arrowFrame >= 0) {
+                    const baseY = Math.max(300, arrow.y);
+                    drawUpvote(arrow.x, baseY, arrow.size, arrow.colorSet);
+                }
+            });
+            updateDirtParticles();
+            
+            frame += animationSpeed;
+            
+            // Loop animation
+            if (frame > 160) {
+                frame = 0;
+                arrows.forEach(arrow => {
+                    arrow.y = 500;
+                });
+                dirtParticles = [];
+            }
+            
+            requestAnimationFrame(animate);
+        }
+
+        function restartAnimation() {
+            frame = 0;
+            arrows.forEach(arrow => {
+                arrow.y = 500;
+            });
+            dirtParticles = [];
+        }
+
+        // Start animation
+        animate();
+    </script>
+</body>
+</html>

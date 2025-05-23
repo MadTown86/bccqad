@@ -1,0 +1,8 @@
+Logarithm Rules:
+(b here is Subscript)
+logb(ac) = logba + logbc
+logb(a/c) = logba-logbc
+logb(a^c) = clogba
+logba = logda/logdb
+b^logda = a^logdb 
+

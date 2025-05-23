@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Tree Traversal Methods</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .traversal-section {
+            margin-bottom: 50px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+        
+        .traversal-header {
+            padding: 20px 30px;
+            font-weight: 600;
+            font-size: 1.4rem;
+            color: white;
+        }
+        
+        .pre-order { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+        .in-order { background: linear-gradient(135deg, #4ecdc4, #44a08d); }
+        .post-order { background: linear-gradient(135deg, #45b7d1, #96c93d); }
+        .breadth-first { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        
+        .traversal-content {
+            background: #fafafa;
+            padding: 30px;
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
+        
+        .tree-visual, .sequence-info {
+            flex: 1;
+        }
+        
+        .tree-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .tree {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .node {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #34495e;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: relative;
+            margin: 5px;
+            z-index: 2;
+            font-size: 14px;
+        }
+        
+        .level-1 { display: flex; justify-content: center; }
+        .level-2 { display: flex; justify-content: center; gap: 80px; margin-top: 40px; }
+        .level-3 { display: flex; justify-content: center; gap: 40px; margin-top: 40px; }
+        
+        .line {
+            position: absolute;
+            background: #7f8c8d;
+            z-index: 1;
+        }
+        
+        .line-1-2 { width: 2px; height: 35px; top: 45px; left: 19px; }
+        .line-1-3 { width: 2px; height: 35px; top: 45px; right: 19px; }
+        .line-2-4 { width: 2px; height: 35px; top: 45px; left: 19px; }
+        .line-2-5 { width: 2px; height: 35px; top: 45px; right: 19px; }
+        .line-3-6 { width: 2px; height: 35px; top: 45px; left: 19px; }
+        .line-3-7 { width: 2px; height: 35px; top: 45px; right: 19px; }
+        
+        .diagonal-left {
+            width: 50px;
+            height: 2px;
+            background: #7f8c8d;
+            position: absolute;
+            top: 60px;
+            left: -15px;
+            transform: rotate(-35deg);
+            transform-origin: right center;
+        }
+        
+        .diagonal-right {
+            width: 50px;
+            height: 2px;
+            background: #7f8c8d;
+            position: absolute;
+            top: 60px;
+            right: -15px;
+            transform: rotate(35deg);
+            transform-origin: left center;
+        }
+        
+        .sequence {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 20px;
+        }
+        
+        .sequence h4 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        
+        .sequence-steps {
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: #e74c3c;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        .algorithm {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #27ae60;
+        }
+        
+        .algorithm h4 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        
+        .algorithm ol {
+            margin: 0;
+            padding-left: 20px;
+            line-height: 1.8;
+        }
+        
+        .algorithm li {
+            margin-bottom: 8px;
+            color: #34495e;
+        }
+        
+        .tree-structure {
+            text-align: center;
+            margin-bottom: 20px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #7f8c8d;
+            line-height: 1.4;
+        }
+        
+        .highlighted-sequence {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .seq-node {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e74c3c;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            position: relative;
+        }
+        
+        .seq-node::after {
+            content: "→";
+            position: absolute;
+            right: -15px;
+            color: #7f8c8d;
+        }
+        
+        .seq-node:last-child::after {
+            display: none;
+        }
+        
+        .note {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.95rem;
+            color: #856404;
+        }
+        
+        .note strong {
+            color: #533f03;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Binary Tree Traversal Methods</h1>
+            <p>Visual guide to Pre-order, In-order, Post-order, and Breadth-first traversals</p>
+        </div>
+        
+        <div class="content">
+            <!-- Pre-order Traversal -->
+            <div class="traversal-section">
+                <div class="traversal-header pre-order">
+                    Pre-order Traversal (Root → Left → Right)
+                </div>
+                <div class="traversal-content">
+                    <div class="tree-visual">
+                        <div class="tree-structure">
+                            Sample Binary Tree:<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;1<br>
+                            &nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;\<br>
+                            &nbsp;2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3<br>
+                            /&nbsp;\&nbsp;&nbsp;&nbsp;/&nbsp;\<br>
+                            4&nbsp;&nbsp;5&nbsp;&nbsp;6&nbsp;&nbsp;7
+                        </div>
+                        <div class="tree-container">
+                            <div class="tree">
+                                <div class="level-1">
+                                    <div class="node" style="position: relative;">
+                                        1
+                                        <div class="diagonal-left"></div>
+                                        <div class="diagonal-right"></div>
+                                    </div>
+                                </div>
+                                <div class="level-2">
+                                    <div class="node" style="position: relative;">
+                                        2
+                                        <div class="diagonal-left"></div>
+                                        <div class="diagonal-right"></div>
+                                    </div>
+                                    <div class="node" style="position: relative;">
+                                        3
+                                        <div class="diagonal-left"></div>
+                                        <div class="diagonal-right"></div>
+                                    </div>
+                                </div>
+                                <div class="level-3">
+                                    <div class="node">4</div>
+                                    <div class="node">5</div>
+                                    <div class="node">6</div>
+                                    <div class="node">7</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="highlighted-sequence">
+                            <div class="seq-node">1</div>
+                            <div class="seq-node">2</div>
+                            <div class="seq-node">4</div>
+                            <div class="seq-node">5</div>
+                            <div class="seq-node">3</div>
+                            <div class="seq-node">6</div>
+                            <div class="seq-node">7</div>
+                        </div>
+                    </div>
+                    <div class="sequence-info">
+                        <div class="sequence">
+                            <h4>Traversal Sequence</h4>
+                            <div class="sequence-steps">1 → 2 → 4 → 5 → 3 → 6 → 7</div>
+                        </div>
+                        <div class="algorithm">
+                            <h4>Algorithm Steps</h4>
+                            <ol>
+                                <li>Visit the root node</li>
+                                <li>Traverse the left subtree</li>
+                                <li>Traverse the right subtree</li>
+                            </ol>
+                        </div>
+                        <div class="note">
+                            <strong>Use Case:</strong> Creating a copy of the tree, expression trees for prefix notation
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- In-order Traversal -->
+            <div class="traversal-section">
+                <div class="traversal-header in-order">
+                    In-order Traversal (Left → Root → Right)
+                </div>
+                <div class="traversal-content">
+                    <div class="tree-visual">
+                        <div class="tree-structure">
+                            Same Binary Tree:<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;1<br>
+                            &nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;\<br>
+                            &nbsp;2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3<br>
+                            /&nbsp;\&nbsp;&nbsp;&nbsp;/&nbsp;\<br>
+                            4&nbsp;&nbsp;5&nbsp;&nbsp;6&nbsp;&nbsp;7
+                        </div>
+                        <div class="tree-container">
+                            <div class="tree">
+                                <div class="level-1">
+                                    <div class="node" style="position: relative;">
+                                        1
+                                        <div class="diagonal-left"></div>
+                                        <div class="diagonal-right"></div>
+                                    </div>
+                                </div>
+                                <div class="level-2">
+                                    <div class="node" style="position: relative;">
+                                        2
+                                        <div class="diagonal-left"></div>
+                                        <div class="diagonal-right"></div>
+                                    </div>
+                                    <div class="node" style="position: relative;">
+                                        3
+                                        <div class="diagonal-left"></div>
+                                        <div class="diagonal-right"></div>
+                                    </div>
+                                </div>
+                                <div class="level-3">
+                                    <div class="node">4</div>
+                                    <div class="node">5</div>
+                                    <div class="node">6</div>
+                                    <div class="node">7</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="highlighted-sequence">
+                            <div class="seq-node" style="background: #4ecdc4;">4</div>
+                            <div class="seq-node" style="background: #4ecdc4;">2</div>
+                            <div class="seq-node" style="background: #4ecdc4;">5</div>
+                            <div class="seq-node" style="background: #4ecdc4;">1</div>
+                            <div class="seq-node" style="background: #4ecdc4;">6</div>
+                            <div class="seq-node" style="background: #4ecdc4;">3</div>
+                            <div class="seq-node" style="background: #4ecdc4;">7</div>
+                        </div>
+                    </div>
+                    <div class="sequence-info">
+                        <div class="sequence">
+                            <h4>Traversal Sequence</h4>
+                            <div class="sequence-steps">4 → 2 → 5 → 1 → 6 → 3 → 7</div>
+                        </div>
+                        <div class="algorithm">
+                            <h4>Algorithm Steps</h4>
+                            <ol>
+                                <li>Traverse the left subtree</li>
+                                <li>Visit the root node</li>
+                                <li>Traverse the right subtree</li>
+                            </ol>
+                        </div>
+                        <div class="note">
+                            <strong>Use Case:</strong> Binary Search Trees (gives sorted order), expression evaluation
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Post-order Traversal -->
+            <div class="traversal-section">
+                <div class="traversal-header post-order">
+                    Post-order Traversal (Left → Right → Root)
+                </div>
+                <div class="traversal-content">
+                    <div class="tree-visual">
+                        <div class="tree-structure">
+                            Same Binary Tree:<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;1<br>
+                            &nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;\<br>
+                            &nbsp;2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3<br>
+                            /&nbsp;\&nbsp;&nbsp;&nbsp;/&nbsp;\<br>
+                            4&nbsp;&nbsp;5&nbsp;&nbsp;6&nbsp;&nbsp;7
+                        </div>
+                        <div class="tree-container">
+                            <div class="tree">
+                                <div class="level-1">
+                                    <div class="node" style="position: relative;">
+                                        1
+                                        <div class="diagonal-left"></div>
+                                        <div class="diagonal-right"></div>
+                                    </div>
+                                </div>
+                                <div class="level-2">
+                                    <div class="node" style="position: relative;">
+                                        2
+                                        <div class="diagonal-left"></div>
+                                        <div class="diagonal-right"></div>
+                                    </div>
+                                    <div class="node" style="position: relative;">
+                                        3
+                                        <div class="diagonal-left"></div>
+                                        <div class="diagonal-right"></div>
+                                    </div>
+                                </div>
+                                <div class="level-3">
+                                    <div class="node">4</div>
+                                    <div class="node">5</div>
+                                    <div class="node">6</div>
+                                    <div class="node">7</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="highlighted-sequence">
+                            <div class="seq-node" style="background: #45b7d1;">4</div>
+                            <div class="seq-node" style="background: #45b7d1;">5</div>
+                            <div class="seq-node" style="background: #45b7d1;">2</div>
+                            <div class="seq-node" style="background: #45b7d1;">6</div>
+                            <div class="seq-node" style="background: #45b7d1;">7</div>
+                            <div class="seq-node" style="background: #45b7d1;">3</div>
+                            <div class="seq-node" style="background: #45b7d1;">1</div>
+                        </div>
+                    </div>
+                    <div class="sequence-info">
+                        <div class="sequence">
+                            <h4>Traversal Sequence</h4>
+                            <div class="sequence-steps">4 → 5 → 2 → 6 → 7 → 3 → 1</div>
+                        </div>
+                        <div class="algorithm">
+                            <h4>Algorithm Steps</h4>
+                            <ol>
+                                <li>Traverse the left subtree</li>
+                                <li>Traverse the right subtree</li>
+                                <li>Visit the root node</li>
+                            </ol>
+                        </div>
+                        <div class="note">
+                            <strong>Use Case:</strong> Deleting trees, postfix expression evaluation, calculating directory sizes
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Breadth-first Traversal -->
+            <div class="traversal-section">
+                <div class="traversal-header breadth-first">
+                    Breadth-first Traversal (Level by Level)
+                </div>
+                <div class="traversal-content">
+                    <div class="tree-visual">
+                        <div class="tree-structure">
+                            Same Binary Tree:<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← Level 1<br>
+                            &nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;\<br>
+                            &nbsp;2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;← Level 2<br>
+                            /&nbsp;\&nbsp;&nbsp;&nbsp;/&nbsp;\<br>
+                            4&nbsp;&nbsp;5&nbsp;&nbsp;6&nbsp;&nbsp;7&nbsp;&nbsp;← Level 3
+                        </div>
+                        <div class="tree-container">
+                            <div class="tree">
+                                <div class="level-1">
+                                    <div class="node" style="position: relative;">
+                                        1
+                                        <div class="diagonal-left"></div>
+                                        <div class="diagonal-right"></div>
+                                    </div>
+                                </div>
+                                <div class="level-2">
+                                    <div class="node" style="position: relative;">
+                                        2
+                                        <div class="diagonal-left"></div>
+                                        <div class="diagonal-right"></div>
+                                    </div>
+                                    <div class="node" style="position: relative;">
+                                        3
+                                        <div class="diagonal-left"></div>
+                                        <div class="diagonal-right"></div>
+                                    </div>
+                                </div>
+                                <div class="level-3">
+                                    <div class="node">4</div>
+                                    <div class="node">5</div>
+                                    <div class="node">6</div>
+                                    <div class="node">7</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="highlighted-sequence">
+                            <div class="seq-node" style="background: #f093fb;">1</div>
+                            <div class="seq-node" style="background: #f093fb;">2</div>
+                            <div class="seq-node" style="background: #f093fb;">3</div>
+                            <div class="seq-node" style="background: #f093fb;">4</div>
+                            <div class="seq-node" style="background: #f093fb;">5</div>
+                            <div class="seq-node" style="background: #f093fb;">6</div>
+                            <div class="seq-node" style="background: #f093fb;">7</div>
+                        </div>
+                    </div>
+                    <div class="sequence-info">
+                        <div class="sequence">
+                            <h4>Traversal Sequence</h4>
+                            <div class="sequence-steps">1 → 2 → 3 → 4 → 5 → 6 → 7</div>
+                        </div>
+                        <div class="algorithm">
+                            <h4>Algorithm Steps</h4>
+                            <ol>
+                                <li>Start with root in queue</li>
+                                <li>Visit front node from queue</li>
+                                <li>Add its children to queue</li>
+                                <li>Repeat until queue is empty</li>
+                            </ol>
+                        </div>
+                        <div class="note">
+                            <strong>Use Case:</strong> Level-order processing, finding shortest path, printing tree level by level
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
