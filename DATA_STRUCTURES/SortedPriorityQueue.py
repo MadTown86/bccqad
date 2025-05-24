@@ -5,6 +5,21 @@ from PriorityQueueBase import PriorityQueueBase
 from PositionalList import PositionalList
 
 class SortedPriorityQueue(PriorityQueueBase):
+    """
+    Sorted List Implementation: BigO
+    len: O(1)
+    is_empty: O(1)
+    add: O(n) - (You have to reorder the list after adding a value, worst case go through entire list)
+    min: O(1) - (Sorted, so it will always be the first element)
+    remove_min: O(1)
+
+    Unsorted List Implementation: BigO
+    len: O(1)
+    is_empty: O(1)
+    add: O(1)
+    min: O(n) - (YOu have to go through the entire list to find the minimum value at worst case)
+    remove_min: O(n) (Same as above)
+    """
     def __init__(self):
         self._data = PositionalList()
 

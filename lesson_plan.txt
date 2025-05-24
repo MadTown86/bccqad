@@ -67,8 +67,8 @@ Episode 25: BCC25 - Intermediate Python Tutorial - Trees
 Episode 26: BCC26 - Intermediate Python Tutorial - Recursion - Tree Traversals
 Episode 27: BCC27 - Intermediate Python Tutorial - Tree Traversals - Breadth First Search, Depth First Search
 Episode 28: BCC28 - Intermediate Python Tutorial - BST (Binary Search Tree) - Insertion and Deletion
-Episode ##: BCC## - Intermediate Python Tutorial - Text Processing
-Episode ##: BCC## - Intermediate Python Tutorial - Graph Algorithms
+Episode 29: BCC29 - Intermediate Python Tutorial - Positionally Linked List (Because I wanted To)
+Episode 30: BCC30 - Intermediate Python Tutorial - Heaps not Peeps YUCK!
 Episode ##: BCC## - Intermediate Python Tutorial - Memory Management and B-Trees
 
 
