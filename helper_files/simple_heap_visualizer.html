@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heap Visualizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .controls {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .btn-insert { background-color: #28a745; color: white; }
+        .btn-extract { background-color: #dc3545; color: white; }
+        .btn-toggle { background-color: #6f42c1; color: white; }
+        .btn-reset { background-color: #6c757d; color: white; }
+        
+        button:hover {
+            opacity: 0.8;
+        }
+        
+        input {
+            padding: 8px;
+            margin: 5px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            width: 80px;
+            text-align: center;
+        }
+        
+        .heap-info {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .heap-display {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        svg {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fafafa;
+        }
+        
+        .node {
+            transition: all 0.3s ease;
+        }
+        
+        .comparing {
+            fill: #ffc107 !important;
+            stroke: #ff6b35 !important;
+            stroke-width: 3 !important;
+        }
+        
+        .swapping {
+            fill: #dc3545 !important;
+            stroke: #721c24 !important;
+            stroke-width: 3 !important;
+        }
+        
+        .explanation {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .explanation-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .explanation-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        
+        @media (max-width: 768px) {
+            .explanation {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Heap Visualizer</h1>
+        
+        <div class="controls">
+            <input type="number" id="insertValue" placeholder="Value" min="1" max="99">
+            <button class="btn-insert" onclick="insertNumber()">Insert & Bubble Up</button>
+            <button class="btn-extract" onclick="extractRoot()">Extract Root & Bubble Down</button>
+            <button class="btn-toggle" onclick="toggleHeapType()">Switch to <span id="toggleText">Min</span> Heap</button>
+            <button class="btn-reset" onclick="resetHeap()">Reset</button>
+        </div>
+        
+        <div class="heap-info">
+            <span id="heapType">Max Heap</span> | Root: <span id="rootValue">50</span>
+        </div>
+        
+        <div class="heap-display">
+            <svg id="heapSvg" width="800" height="300"></svg>
+        </div>
+        
+        <div class="explanation">
+            <div class="explanation-box">
+                <h3>Max Heap Rules</h3>
+                <p><strong>Parent ≥ Children:</strong> Every parent node is greater than or equal to its children.</p>
+                <p><strong>Bubble Up:</strong> New elements start at bottom and move up if larger than parent.</p>
+                <p><strong>Bubble Down:</strong> Root replacement moves down, swapping with larger child.</p>
+            </div>
+            
+            <div class="explanation-box">
+                <h3>Min Heap Rules</h3>
+                <p><strong>Parent ≤ Children:</strong> Every parent node is less than or equal to its children.</p>
+                <p><strong>Bubble Up:</strong> New elements start at bottom and move up if smaller than parent.</p>
+                <p><strong>Bubble Down:</strong> Root replacement moves down, swapping with smaller child.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple global variables
+        var heap = [50, 30, 40, 10, 20, 35, 25];
+        var isMaxHeap = true;
+        var isAnimating = false;
+        
+        function sleep(ms) {
+            return new Promise(function(resolve) {
+                setTimeout(resolve, ms);
+            });
+        }
+        
+        function getParent(i) {
+            return Math.floor((i - 1) / 2);
+        }
+        
+        function getLeftChild(i) {
+            return 2 * i + 1;
+        }
+        
+        function getRightChild(i) {
+            return 2 * i + 2;
+        }
+        
+        function shouldSwap(parentVal, childVal) {
+            if (isMaxHeap) {
+                return childVal > parentVal;
+            } else {
+                return childVal < parentVal;
+            }
+        }
+        
+        function getBetterChild(leftVal, rightVal) {
+            if (isMaxHeap) {
+                return leftVal > rightVal ? 'left' : 'right';
+            } else {
+                return leftVal < rightVal ? 'left' : 'right';
+            }
+        }
+        
+        function getNodePosition(index) {
+            var level = Math.floor(Math.log2(index + 1));
+            var posInLevel = index - (Math.pow(2, level) - 1);
+            var nodesInLevel = Math.pow(2, level);
+            
+            var x = 400 + (posInLevel - nodesInLevel/2 + 0.5) * (600 / nodesInLevel);
+            var y = 50 + level * 60;
+            
+            return { x: x, y: y };
+        }
+        
+        function drawHeap(highlightNodes) {
+            var svg = document.getElementById('heapSvg');
+            svg.innerHTML = '';
+            
+            highlightNodes = highlightNodes || {};
+            
+            // Draw connections first
+            for (var i = 1; i < heap.length; i++) {
+                var parentPos = getNodePosition(getParent(i));
+                var childPos = getNodePosition(i);
+                
+                var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', parentPos.x);
+                line.setAttribute('y1', parentPos.y);
+                line.setAttribute('x2', childPos.x);
+                line.setAttribute('y2', childPos.y);
+                line.setAttribute('stroke', '#999');
+                line.setAttribute('stroke-width', '2');
+                svg.appendChild(line);
+            }
+            
+            // Draw nodes
+            for (var i = 0; i < heap.length; i++) {
+                var pos = getNodePosition(i);
+                
+                var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', pos.x);
+                circle.setAttribute('cy', pos.y);
+                circle.setAttribute('r', '25');
+                circle.setAttribute('fill', '#4CAF50');
+                circle.setAttribute('stroke', '#2E7D32');
+                circle.setAttribute('stroke-width', '2');
+                circle.setAttribute('class', 'node');
+                
+                if (highlightNodes[i] === 'comparing') {
+                    circle.setAttribute('class', 'node comparing');
+                } else if (highlightNodes[i] === 'swapping') {
+                    circle.setAttribute('class', 'node swapping');
+                }
+                
+                var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', pos.x);
+                text.setAttribute('y', pos.y + 5);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('fill', 'white');
+                text.setAttribute('font-size', '16');
+                text.setAttribute('font-weight', 'bold');
+                text.textContent = heap[i];
+                
+                svg.appendChild(circle);
+                svg.appendChild(text);
+            }
+            
+            document.getElementById('rootValue').textContent = heap.length > 0 ? heap[0] : 'Empty';
+        }
+        
+        function bubbleUp(index) {
+            return new Promise(function(resolve) {
+                function step() {
+                    if (index <= 0) {
+                        drawHeap();
+                        resolve();
+                        return;
+                    }
+                    
+                    var parentIndex = getParent(index);
+                    var highlights = {};
+                    highlights[index] = 'comparing';
+                    highlights[parentIndex] = 'comparing';
+                    drawHeap(highlights);
+                    
+                    setTimeout(function() {
+                        if (shouldSwap(heap[parentIndex], heap[index])) {
+                            // Swap
+                            highlights[index] = 'swapping';
+                            highlights[parentIndex] = 'swapping';
+                            drawHeap(highlights);
+                            
+                            setTimeout(function() {
+                                var temp = heap[index];
+                                heap[index] = heap[parentIndex];
+                                heap[parentIndex] = temp;
+                                
+                                index = parentIndex;
+                                step();
+                            }, 500);
+                        } else {
+                            drawHeap();
+                            resolve();
+                        }
+                    }, 800);
+                }
+                step();
+            });
+        }
+        
+        function bubbleDown(index) {
+            return new Promise(function(resolve) {
+                function step() {
+                    var leftChild = getLeftChild(index);
+                    var rightChild = getRightChild(index);
+                    var targetIndex = index;
+                    
+                    var highlights = {};
+                    highlights[index] = 'comparing';
+                    
+                    if (leftChild < heap.length) {
+                        highlights[leftChild] = 'comparing';
+                        if (shouldSwap(heap[targetIndex], heap[leftChild])) {
+                            targetIndex = leftChild;
+                        }
+                    }
+                    
+                    if (rightChild < heap.length) {
+                        highlights[rightChild] = 'comparing';
+                        if (shouldSwap(heap[targetIndex], heap[rightChild])) {
+                            targetIndex = rightChild;
+                        }
+                    }
+                    
+                    drawHeap(highlights);
+                    
+                    setTimeout(function() {
+                        if (targetIndex !== index) {
+                            // Swap
+                            highlights[index] = 'swapping';
+                            highlights[targetIndex] = 'swapping';
+                            drawHeap(highlights);
+                            
+                            setTimeout(function() {
+                                var temp = heap[index];
+                                heap[index] = heap[targetIndex];
+                                heap[targetIndex] = temp;
+                                
+                                index = targetIndex;
+                                step();
+                            }, 500);
+                        } else {
+                            drawHeap();
+                            resolve();
+                        }
+                    }, 800);
+                }
+                step();
+            });
+        }
+        
+        function insertNumber() {
+            if (isAnimating) return;
+            
+            var input = document.getElementById('insertValue');
+            var value = parseInt(input.value);
+            
+            if (isNaN(value) || value < 1 || value > 99) {
+                alert('Please enter a number between 1 and 99');
+                return;
+            }
+            
+            isAnimating = true;
+            heap.push(value);
+            input.value = '';
+            drawHeap();
+            
+            bubbleUp(heap.length - 1).then(function() {
+                isAnimating = false;
+            });
+        }
+        
+        function extractRoot() {
+            if (isAnimating || heap.length === 0) return;
+            
+            isAnimating = true;
+            
+            if (heap.length === 1) {
+                heap = [];
+                drawHeap();
+                isAnimating = false;
+                return;
+            }
+            
+            heap[0] = heap[heap.length - 1];
+            heap.pop();
+            drawHeap();
+            
+            setTimeout(function() {
+                bubbleDown(0).then(function() {
+                    isAnimating = false;
+                });
+            }, 500);
+        }
+        
+        function toggleHeapType() {
+            if (isAnimating) return;
+            
+            isMaxHeap = !isMaxHeap;
+            document.getElementById('heapType').textContent = isMaxHeap ? 'Max Heap' : 'Min Heap';
+            document.getElementById('toggleText').textContent = isMaxHeap ? 'Min' : 'Max';
+            
+            // Sort to show proper heap structure
+            heap.sort(function(a, b) {
+                return isMaxHeap ? b - a : a - b;
+            });
+            
+            drawHeap();
+        }
+        
+        function resetHeap() {
+            if (isAnimating) return;
+            
+            heap = [50, 30, 40, 10, 20, 35, 25];
+            drawHeap();
+        }
+        
+        // Handle Enter key
+        document.getElementById('insertValue').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                insertNumber();
+            }
+        });
+        
+        // Initial draw
+        drawHeap();
+    </script>
+</body>
+</html>

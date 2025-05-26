@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, JSX } from 'react';
 
 const HeapVisualizer = () => {
   const [heap, setHeap] = useState([42, 35, 28, 15, 20, 10, 8, 5, 12]);
@@ -161,7 +161,7 @@ const HeapVisualizer = () => {
   };
 
   const renderConnections = () => {
-    const connections: React.JSX.Element[] = [];
+    const connections: JSX.Element[] = [];
     
     for (let i = 1; i < heap.length; i++) {
       const parentIndex = getParentIndex(i);

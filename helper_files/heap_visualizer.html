@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heap Visualizer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .controls {
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .heap-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .heap-container {
+            flex: 1;
+            min-width: 500px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            background: #fff;
+        }
+
+        .heap-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .min-heap .heap-title {
+            color: #28a745;
+        }
+
+        .max-heap .heap-title {
+            color: #dc3545;
+        }
+
+        .array-view {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .array-elements {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .array-element {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            background: white;
+            font-weight: bold;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .array-element:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .array-element.selected {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+
+        .array-element.parent {
+            border-color: #28a745;
+            background: #e8f5e8;
+        }
+
+        .array-element.child {
+            border-color: #ffc107;
+            background: #fff8e1;
+        }
+
+        .index-label {
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #666;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .tree-view {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .tree-level {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+            gap: 20px;
+        }
+
+        .tree-node {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .min-heap .tree-node {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border: 3px solid #1e7e34;
+        }
+
+        .max-heap .tree-node {
+            background: linear-gradient(135deg, #dc3545, #fd7e14);
+            border: 3px solid #bd2130;
+        }
+
+        .tree-node:hover {
+            transform: scale(1.1);
+        }
+
+        .tree-node.selected {
+            box-shadow: 0 0 0 4px #007bff;
+        }
+
+        .tree-node.parent {
+            box-shadow: 0 0 0 4px #28a745;
+        }
+
+        .tree-node.child {
+            box-shadow: 0 0 0 4px #ffc107;
+        }
+
+        .controls input {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .controls button {
+            padding: 8px 16px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .controls button:hover {
+            background: #0056b3;
+        }
+
+        .info-panel {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .relationship-info {
+            margin-top: 10px;
+            padding: 10px;
+            background: #fff3cd;
+            border-radius: 5px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .formula {
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 4px 8px;
+            border-radius: 3px;
+            margin: 0 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌲 Heap Data Structure Visualizer</h1>
+            <p>Interactive tool to understand min-heap and max-heap array implementations</p>
+        </div>
+
+        <div class="controls">
+            <input type="number" id="valueInput" placeholder="Enter value" min="1" max="99">
+            <button onclick="addValue()">Add Value</button>
+            <button onclick="clearHeaps()">Clear All</button>
+            <button onclick="loadSample()">Load Sample Data</button>
+        </div>
+
+        <div class="heap-section">
+            <div class="heap-container min-heap">
+                <div class="heap-title">Min-Heap</div>
+                <div class="array-view">
+                    <strong>Array Representation:</strong>
+                    <div class="array-elements" id="minArrayView"></div>
+                </div>
+                <div class="tree-view" id="minTreeView"></div>
+            </div>
+
+            <div class="heap-container max-heap">
+                <div class="heap-title">Max-Heap</div>
+                <div class="array-view">
+                    <strong>Array Representation:</strong>
+                    <div class="array-elements" id="maxArrayView"></div>
+                </div>
+                <div class="tree-view" id="maxTreeView"></div>
+            </div>
+        </div>
+
+        <div class="info-panel">
+            <h3>📚 Heap Properties & Array Relationships</h3>
+            <p><strong>Array Index Relationships:</strong></p>
+            <ul>
+                <li>Parent of node at index <span class="formula">i</span>: <span class="formula">Math.floor((i-1)/2)</span></li>
+                <li>Left child of node at index <span class="formula">i</span>: <span class="formula">2*i + 1</span></li>
+                <li>Right child of node at index <span class="formula">i</span>: <span class="formula">2*i + 2</span></li>
+            </ul>
+            <p><strong>Heap Order Properties:</strong></p>
+            <ul>
+                <li><strong>Min-Heap:</strong> Parent ≤ Children (smallest element at root)</li>
+                <li><strong>Max-Heap:</strong> Parent ≥ Children (largest element at root)</li>
+            </ul>
+            <div class="relationship-info" id="relationshipInfo">
+                Click on any element to see its parent-child relationships!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class MinHeap {
+            constructor() {
+                this.heap = [];
+            }
+
+            insert(value) {
+                this.heap.push(value);
+                this.heapifyUp(this.heap.length - 1);
+            }
+
+            heapifyUp(index) {
+                if (index === 0) return;
+                
+                const parentIndex = Math.floor((index - 1) / 2);
+                if (this.heap[parentIndex] > this.heap[index]) {
+                    [this.heap[parentIndex], this.heap[index]] = [this.heap[index], this.heap[parentIndex]];
+                    this.heapifyUp(parentIndex);
+                }
+            }
+
+            getParentIndex(index) {
+                return index === 0 ? -1 : Math.floor((index - 1) / 2);
+            }
+
+            getLeftChildIndex(index) {
+                return 2 * index + 1;
+            }
+
+            getRightChildIndex(index) {
+                return 2 * index + 2;
+            }
+        }
+
+        class MaxHeap {
+            constructor() {
+                this.heap = [];
+            }
+
+            insert(value) {
+                this.heap.push(value);
+                this.heapifyUp(this.heap.length - 1);
+            }
+
+            heapifyUp(index) {
+                if (index === 0) return;
+                
+                const parentIndex = Math.floor((index - 1) / 2);
+                if (this.heap[parentIndex] < this.heap[index]) {
+                    [this.heap[parentIndex], this.heap[index]] = [this.heap[index], this.heap[parentIndex]];
+                    this.heapifyUp(parentIndex);
+                }
+            }
+
+            getParentIndex(index) {
+                return index === 0 ? -1 : Math.floor((index - 1) / 2);
+            }
+
+            getLeftChildIndex(index) {
+                return 2 * index + 1;
+            }
+
+            getRightChildIndex(index) {
+                return 2 * index + 2;
+            }
+        }
+
+        let minHeap = new MinHeap();
+        let maxHeap = new MaxHeap();
+        let selectedIndex = -1;
+
+        function addValue() {
+            const input = document.getElementById('valueInput');
+            const value = parseInt(input.value);
+            
+            if (isNaN(value) || value < 1 || value > 99) {
+                alert('Please enter a valid number between 1 and 99');
+                return;
+            }
+
+            minHeap.insert(value);
+            maxHeap.insert(value);
+            input.value = '';
+            
+            updateVisualization();
+        }
+
+        function clearHeaps() {
+            minHeap = new MinHeap();
+            maxHeap = new MaxHeap();
+            selectedIndex = -1;
+            updateVisualization();
+        }
+
+        function loadSample() {
+            clearHeaps();
+            const sampleData = [15, 10, 20, 8, 25, 30, 12];
+            sampleData.forEach(value => {
+                minHeap.insert(value);
+                maxHeap.insert(value);
+            });
+            updateVisualization();
+        }
+
+        function selectElement(index) {
+            selectedIndex = selectedIndex === index ? -1 : index;
+            updateVisualization();
+        }
+
+        function updateVisualization() {
+            updateArrayView();
+            updateTreeView();
+            updateRelationshipInfo();
+        }
+
+        function updateArrayView() {
+            updateArrayForHeap('minArrayView', minHeap, 'min');
+            updateArrayForHeap('maxArrayView', maxHeap, 'max');
+        }
+
+        function updateArrayForHeap(containerId, heap, type) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            heap.heap.forEach((value, index) => {
+                const element = document.createElement('div');
+                element.className = 'array-element';
+                element.textContent = value;
+                element.onclick = () => selectElement(index);
+                
+                const indexLabel = document.createElement('div');
+                indexLabel.className = 'index-label';
+                indexLabel.textContent = index;
+                element.appendChild(indexLabel);
+                
+                if (index === selectedIndex) {
+                    element.classList.add('selected');
+                } else if (selectedIndex !== -1) {
+                    const parentIndex = heap.getParentIndex(selectedIndex);
+                    const leftChild = heap.getLeftChildIndex(selectedIndex);
+                    const rightChild = heap.getRightChildIndex(selectedIndex);
+                    
+                    if (index === parentIndex) {
+                        element.classList.add('parent');
+                    } else if (index === leftChild || index === rightChild) {
+                        element.classList.add('child');
+                    }
+                }
+                
+                container.appendChild(element);
+            });
+        }
+
+        function updateTreeView() {
+            updateTreeForHeap('minTreeView', minHeap, 'min');
+            updateTreeForHeap('maxTreeView', maxHeap, 'max');
+        }
+
+        function updateTreeForHeap(containerId, heap, type) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            if (heap.heap.length === 0) return;
+            
+            const levels = Math.ceil(Math.log2(heap.heap.length + 1));
+            let nodeIndex = 0;
+            
+            for (let level = 0; level < levels; level++) {
+                const levelDiv = document.createElement('div');
+                levelDiv.className = 'tree-level';
+                
+                const nodesInLevel = Math.pow(2, level);
+                for (let i = 0; i < nodesInLevel && nodeIndex < heap.heap.length; i++) {
+                    const node = document.createElement('div');
+                    node.className = 'tree-node';
+                    node.textContent = heap.heap[nodeIndex];
+                    node.onclick = () => selectElement(nodeIndex);
+                    
+                    if (nodeIndex === selectedIndex) {
+                        node.classList.add('selected');
+                    } else if (selectedIndex !== -1) {
+                        const parentIndex = heap.getParentIndex(selectedIndex);
+                        const leftChild = heap.getLeftChildIndex(selectedIndex);
+                        const rightChild = heap.getRightChildIndex(selectedIndex);
+                        
+                        if (nodeIndex === parentIndex) {
+                            node.classList.add('parent');
+                        } else if (nodeIndex === leftChild || nodeIndex === rightChild) {
+                            node.classList.add('child');
+                        }
+                    }
+                    
+                    levelDiv.appendChild(node);
+                    nodeIndex++;
+                }
+                
+                container.appendChild(levelDiv);
+            }
+        }
+
+        function updateRelationshipInfo() {
+            const infoDiv = document.getElementById('relationshipInfo');
+            
+            if (selectedIndex === -1 || selectedIndex >= minHeap.heap.length) {
+                infoDiv.innerHTML = 'Click on any element to see its parent-child relationships!';
+                return;
+            }
+            
+            const minValue = minHeap.heap[selectedIndex];
+            const maxValue = maxHeap.heap[selectedIndex];
+            const parentIndex = minHeap.getParentIndex(selectedIndex);
+            const leftChildIndex = minHeap.getLeftChildIndex(selectedIndex);
+            const rightChildIndex = minHeap.getRightChildIndex(selectedIndex);
+            
+            let info = `<strong>Selected Index ${selectedIndex}:</strong><br>`;
+            info += `Min-Heap Value: ${minValue}, Max-Heap Value: ${maxValue}<br><br>`;
+            
+            info += `<strong>Relationships:</strong><br>`;
+            if (parentIndex >= 0) {
+                info += `Parent: Index ${parentIndex} (Values: ${minHeap.heap[parentIndex]} / ${maxHeap.heap[parentIndex]})<br>`;
+            } else {
+                info += `Parent: None (this is the root)<br>`;
+            }
+            
+            if (leftChildIndex < minHeap.heap.length) {
+                info += `Left Child: Index ${leftChildIndex} (Values: ${minHeap.heap[leftChildIndex]} / ${maxHeap.heap[leftChildIndex]})<br>`;
+            }
+            
+            if (rightChildIndex < minHeap.heap.length) {
+                info += `Right Child: Index ${rightChildIndex} (Values: ${minHeap.heap[rightChildIndex]} / ${maxHeap.heap[rightChildIndex]})<br>`;
+            }
+            
+            info += `<br><strong>Heap Property Check:</strong><br>`;
+            if (parentIndex >= 0) {
+                const minParentValid = minHeap.heap[parentIndex] <= minHeap.heap[selectedIndex];
+                const maxParentValid = maxHeap.heap[parentIndex] >= maxHeap.heap[selectedIndex];
+                info += `Min-Heap: Parent(${minHeap.heap[parentIndex]}) ≤ Current(${minValue}) = ${minParentValid ? '✅' : '❌'}<br>`;
+                info += `Max-Heap: Parent(${maxHeap.heap[parentIndex]}) ≥ Current(${maxValue}) = ${maxParentValid ? '✅' : '❌'}<br>`;
+            }
+            
+            infoDiv.innerHTML = info;
+        }
+
+        // Initialize with sample data
+        loadSample();
+
+        // Allow Enter key to add values
+        document.getElementById('valueInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addValue();
+            }
+        });
+    </script>
+</body>
+</html>
