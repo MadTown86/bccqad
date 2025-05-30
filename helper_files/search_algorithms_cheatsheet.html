@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Algorithms Cheat Sheet</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 50%, #ff9068 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .excellent { background: linear-gradient(135deg, #4CAF50, #45a049); }
+        .good { background: linear-gradient(135deg, #8BC34A, #7CB342); }
+        .fair { background: linear-gradient(135deg, #FFC107, #FFB300); }
+        .bad { background: linear-gradient(135deg, #FF9800, #F57C00); }
+        .horrible { background: linear-gradient(135deg, #F44336, #D32F2F); }
+        .exponential { background: linear-gradient(135deg, #9C27B0, #7B1FA2); }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 15px 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9em;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+        }
+        
+        tr:hover {
+            background-color: rgba(255, 107, 107, 0.1);
+            transform: scale(1.01);
+        }
+        
+        .algorithm-name {
+            text-align: left !important;
+            font-weight: bold;
+            color: #2c3e50;
+            background: linear-gradient(90deg, #f8f9fa, #e9ecef);
+            border-left: 4px solid #ff6b6b;
+            width: 18%;
+        }
+        
+        .variant {
+            font-style: italic;
+            font-size: 0.8em;
+            color: #666;
+        }
+        
+        .best-case {
+            width: 12%;
+        }
+        
+        .average-case {
+            width: 12%;
+        }
+        
+        .worst-case {
+            width: 12%;
+        }
+        
+        .space {
+            width: 10%;
+        }
+        
+        .best-for {
+            text-align: left !important;
+            width: 20%;
+            font-size: 0.8em;
+        }
+        
+        .notes {
+            text-align: left !important;
+            width: 16%;
+            font-size: 0.75em;
+        }
+        
+        .O-1 { background-color: #4CAF50; color: white; }
+        .O-logn { background-color: #8BC34A; color: white; }
+        .O-n { background-color: #FFC107; color: black; }
+        .O-nlogn { background-color: #FF9800; color: white; }
+        .O-n2 { background-color: #F44336; color: white; }
+        .O-2n { background-color: #9C27B0; color: white; }
+        .O-nm { background-color: #E91E63; color: white; }
+        .O-bd { background-color: #795548; color: white; }
+        
+        .section-header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52) !important;
+            color: white !important;
+            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            table {
+                font-size: 0.7em;
+            }
+            
+            th, td {
+                padding: 6px 4px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .legend {
+                font-size: 0.8em;
+            }
+        }
+        
+        .complexity-notes {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid #ff6b6b;
+        }
+        
+        .complexity-notes h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        
+        .complexity-notes ul {
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .prerequisites {
+            font-style: italic;
+            color: #666;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Search Algorithms Cheat Sheet</h1>
+        
+        <div class="legend">
+            <div class="legend-item excellent">O(1) Excellent</div>
+            <div class="legend-item good">O(log n) Good</div>
+            <div class="legend-item fair">O(n) Fair</div>
+            <div class="legend-item bad">O(n log n) Bad</div>
+            <div class="legend-item horrible">O(n²) Horrible</div>
+            <div class="legend-item exponential">O(2ⁿ) Exponential</div>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th class="algorithm-name">Algorithm</th>
+                    <th class="best-case">Best Case</th>
+                    <th class="average-case">Average Case</th>
+                    <th class="worst-case">Worst Case</th>
+                    <th class="space">Space</th>
+                    <th class="best-for">Best Use Cases</th>
+                    <th class="notes">Key Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Linear Search -->
+                <tr>
+                    <td class="section-header" colspan="7">LINEAR SEARCH ALGORITHMS</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Linear Search<br><span class="variant">(Sequential Search)</span></td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="best-for">• Unsorted data<br>• Small datasets<br>• Linked lists<br>• One-time searches</td>
+                    <td class="notes">Simple, works on any data structure. No preprocessing needed.</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Sentinel Linear Search</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="best-for">• Arrays with frequent searches<br>• Reducing comparisons</td>
+                    <td class="notes">Reduces number of comparisons by adding sentinel value at end.</td>
+                </tr>
+                
+                <!-- Binary Search -->
+                <tr>
+                    <td class="section-header" colspan="7">BINARY SEARCH ALGORITHMS</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Binary Search<br><span class="variant">(Iterative)</span></td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="best-for">• Sorted arrays<br>• Large datasets<br>• Frequent searches<br>• Range queries</td>
+                    <td class="notes"><span class="prerequisites">Requires sorted data.</span> Very efficient for large datasets.</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Binary Search<br><span class="variant">(Recursive)</span></td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="best-for">• When recursion is preferred<br>• Educational purposes</td>
+                    <td class="notes">Same time complexity but uses stack space for recursion.</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Exponential Search<br><span class="variant">(Unbounded Binary)</span></td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="best-for">• Unknown array size<br>• Infinite streams<br>• Very large arrays</td>
+                    <td class="notes">First finds range, then binary search. Good for unbounded data.</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Interpolation Search</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-logn">O(log log n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="best-for">• Uniformly distributed data<br>• Numerical data<br>• Large sorted arrays</td>
+                    <td class="notes"><span class="prerequisites">Best for uniformly distributed data.</span> Can degrade to O(n).</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Ternary Search</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-logn">O(log₃ n)</td>
+                    <td class="O-logn">O(log₃ n)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="best-for">• Unimodal functions<br>• Finding maximum/minimum<br>• Optimization problems</td>
+                    <td class="notes">Divides into 3 parts. More comparisons per iteration than binary.</td>
+                </tr>
+                
+                <!-- Jump/Block Search -->
+                <tr>
+                    <td class="section-header" colspan="7">JUMP/BLOCK SEARCH ALGORITHMS</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Jump Search<br><span class="variant">(Block Search)</span></td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-n">O(√n)</td>
+                    <td class="O-n">O(√n)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="best-for">• Sorted arrays<br>• When binary search overhead is high<br>• Sequential access preferred</td>
+                    <td class="notes">Optimal jump size is √n. Better than linear, worse than binary.</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Fibonacci Search</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="best-for">• Large arrays<br>• When division is expensive<br>• Tape/sequential storage</td>
+                    <td class="notes">Uses Fibonacci numbers instead of division. Good for sequential access.</td>
+                </tr>
+                
+                <!-- Tree-Based Search -->
+                <tr>
+                    <td class="section-header" colspan="7">TREE-BASED SEARCH</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Binary Tree Search<br><span class="variant">(BST)</span></td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="best-for">• Dynamic datasets<br>• Frequent insertions/deletions<br>• Range queries<br>• Sorted traversal</td>
+                    <td class="notes">Performance depends on tree balance. Can degenerate to linked list.</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">AVL Tree Search</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="best-for">• Guaranteed O(log n)<br>• Frequent searches<br>• Height-sensitive applications</td>
+                    <td class="notes">Self-balancing ensures consistent performance. More rotations than RB trees.</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Red-Black Tree Search</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="best-for">• Standard library implementations<br>• Good balance of operations<br>• Java TreeMap, C++ map</td>
+                    <td class="notes">Widely used in practice. Fewer rotations than AVL on insertion.</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">B-Tree Search</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="best-for">• Database systems<br>• File systems<br>• Large datasets on disk<br>• Sequential access patterns</td>
+                    <td class="notes">Optimized for disk I/O. Multiple keys per node reduce height.</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Trie Search<br><span class="variant">(Prefix Tree)</span></td>
+                    <td class="O-n">O(m)</td>
+                    <td class="O-n">O(m)</td>
+                    <td class="O-n">O(m)</td>
+                    <td class="O-nm">O(ALPHABET×N×M)</td>
+                    <td class="best-for">• String searching<br>• Autocomplete<br>• Prefix matching<br>• Dictionary lookups</td>
+                    <td class="notes">m = key length. Excellent for string operations and prefix queries.</td>
+                </tr>
+                
+                <!-- Hash-Based Search -->
+                <tr>
+                    <td class="section-header" colspan="7">HASH-BASED SEARCH</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Hash Table Search<br><span class="variant">(Direct Access)</span></td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="best-for">• Exact key lookups<br>• Fast access required<br>• Cache implementations<br>• Symbol tables</td>
+                    <td class="notes">Best average case. Performance depends on hash function quality.</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Bloom Filter Search</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-n">O(m)</td>
+                    <td class="best-for">• Membership testing<br>• Large datasets<br>• Space-constrained<br>• False positives OK</td>
+                    <td class="notes">Probabilistic. No false negatives, but false positives possible.</td>
+                </tr>
+                
+                <!-- Graph Search -->
+                <tr>
+                    <td class="section-header" colspan="7">GRAPH SEARCH ALGORITHMS</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Breadth-First Search<br><span class="variant">(BFS)</span></td>
+                    <td class="O-n">O(V+E)</td>
+                    <td class="O-n">O(V+E)</td>
+                    <td class="O-n">O(V+E)</td>
+                    <td class="O-n">O(V)</td>
+                    <td class="best-for">• Shortest path (unweighted)<br>• Level-order traversal<br>• Connected components<br>• Minimum spanning tree</td>
+                    <td class="notes">V=vertices, E=edges. Explores level by level. Uses queue.</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Depth-First Search<br><span class="variant">(DFS)</span></td>
+                    <td class="O-n">O(V+E)</td>
+                    <td class="O-n">O(V+E)</td>
+                    <td class="O-n">O(V+E)</td>
+                    <td class="O-n">O(V)</td>
+                    <td class="best-for">• Topological sorting<br>• Cycle detection<br>• Path finding<br>• Maze solving</td>
+                    <td class="notes">Goes deep first. Uses stack (recursion). Memory efficient.</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">A* Search</td>
+                    <td class="O-bd">O(b^d)</td>
+                    <td class="O-bd">O(b^d)</td>
+                    <td class="O-bd">O(b^d)</td>
+                    <td class="O-bd">O(b^d)</td>
+                    <td class="best-for">• Pathfinding in games<br>• GPS navigation<br>• Robotics<br>• Puzzle solving</td>
+                    <td class="notes">b=branching factor, d=depth. Uses heuristic. Optimal with admissible heuristic.</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Dijkstra's Algorithm</td>
+                    <td class="O-nlogn">O((V+E)log V)</td>
+                    <td class="O-nlogn">O((V+E)log V)</td>
+                    <td class="O-nlogn">O((V+E)log V)</td>
+                    <td class="O-n">O(V)</td>
+                    <td class="best-for">• Shortest path (weighted)<br>• Network routing<br>• Social networks<br>• Maps applications</td>
+                    <td class="notes">Non-negative weights only. Guarantees shortest path.</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Bidirectional Search</td>
+                    <td class="O-bd">O(b^(d/2))</td>
+                    <td class="O-bd">O(b^(d/2))</td>
+                    <td class="O-bd">O(b^(d/2))</td>
+                    <td class="O-bd">O(b^(d/2))</td>
+                    <td class="best-for">• Large search spaces<br>• Known start and goal<br>• Symmetric problems</td>
+                    <td class="notes">Searches from both ends. Can dramatically reduce search space.</td>
+                </tr>
+                
+                <!-- String Search -->
+                <tr>
+                    <td class="section-header" colspan="7">STRING SEARCH ALGORITHMS</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Naive String Search<br><span class="variant">(Brute Force)</span></td>
+                    <td class="O-n">O(m)</td>
+                    <td class="O-nm">O(n×m)</td>
+                    <td class="O-nm">O(n×m)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="best-for">• Small patterns<br>• Simple implementation<br>• One-time searches</td>
+                    <td class="notes">n=text length, m=pattern length. Simple but inefficient.</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">KMP Algorithm<br><span class="variant">(Knuth-Morris-Pratt)</span></td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n+m)</td>
+                    <td class="O-n">O(n+m)</td>
+                    <td class="O-n">O(m)</td>
+                    <td class="best-for">• Long patterns<br>• Repetitive patterns<br>• Stream processing<br>• Real-time text processing</td>
+                    <td class="notes">Preprocessing creates failure function. Never backtracks in text.</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Boyer-Moore Algorithm</td>
+                    <td class="O-n">O(n/m)</td>
+                    <td class="O-n">O(n+m)</td>
+                    <td class="O-nm">O(n×m)</td>
+                    <td class="O-n">O(m+σ)</td>
+                    <td class="best-for">• Large alphabets<br>• Long patterns<br>• Text editors<br>• DNA sequence matching</td>
+                    <td class="notes">σ=alphabet size. Searches right-to-left. Can skip characters.</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Rabin-Karp Algorithm</td>
+                    <td class="O-n">O(n+m)</td>
+                    <td class="O-n">O(n+m)</td>
+                    <td class="O-nm">O(n×m)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="best-for">• Multiple pattern search<br>• Plagiarism detection<br>• Rolling hash applications</td>
+                    <td class="notes">Uses rolling hash. Good for multiple patterns. Hash collisions cause worst case.</td>
+                </tr>
+                
+                <!-- Specialized Search -->
+                <tr>
+                    <td class="section-header" colspan="7">SPECIALIZED SEARCH ALGORITHMS</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">QuickSelect<br><span class="variant">(Nth Element)</span></td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n2">O(n²)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="best-for">• Finding kth smallest/largest<br>• Median finding<br>• Top-k problems<br>• Order statistics</td>
+                    <td class="notes">Based on quicksort partitioning. Average case linear time.</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Binary Indexed Tree<br><span class="variant">(Fenwick Tree)</span></td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="best-for">• Range sum queries<br>• Frequency tables<br>• Cumulative statistics<br>• Inversion counting</td>
+                    <td class="notes">Efficient for prefix sum queries and updates.</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Segment Tree Search</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-n">O(4n)</td>
+                    <td class="best-for">• Range queries (min/max/sum)<br>• Lazy propagation<br>• Dynamic programming<br>• Competitive programming</td>
+                    <td class="notes">More versatile than BIT but uses more space.</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Suffix Array Search</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="best-for">• Substring search<br>• Longest common substring<br>• Pattern matching<br>• Bioinformatics</td>
+                    <td class="notes">Preprocessing O(n log n). Very powerful for string problems.</td>
+                </tr>
+                <tr>
+                    <td class="algorithm-name">Skip List Search</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="best-for">• Probabilistic alternative to trees<br>• Concurrent data structures<br>• Simple implementation</td>
+                    <td class="notes">Randomized data structure. Simpler than balanced trees.</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="complexity-notes">
+            <h3>🎯 Algorithm Selection Guide:</h3>
+            <ul>
+                <li><strong>For Sorted Data:</strong> Binary Search (O(log n)) is almost always the best choice</li>
+                <li><strong>For Unsorted Data:</strong> Hash Table (O(1) average) or Linear Search (O(n)) depending on use case</li>
+                <li><strong>For String Matching:</strong> KMP for multiple searches, Boyer-Moore for single searches with large alphabets</li>
+                <li><strong>For Graph Problems:</strong> BFS for shortest path, DFS for connectivity, A* for pathfinding with heuristics</li>
+                <li><strong>For Range Queries:</strong> Segment Trees or Binary Indexed Trees for dynamic data</li>
+                <li><strong>For Approximate Searches:</strong> Bloom Filters when false positives are acceptable</li>
+                <li><strong>For Very Large Datasets:</strong> Consider distributed algorithms or external sorting approaches</li>
+                <li><strong>Space vs Time Trade-offs:</strong> Hash tables use more space but offer better time complexity</li>
+                <li><strong>Preprocessing Costs:</strong> Consider one-time setup costs vs repeated query performance</li>
+                <li><strong>Data Characteristics:</strong> Uniform distribution favors interpolation search, skewed data favors other approaches</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

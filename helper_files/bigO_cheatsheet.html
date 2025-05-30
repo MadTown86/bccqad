@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Big O Notation Cheat Sheet - Data Structures</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .excellent { background: linear-gradient(135deg, #4CAF50, #45a049); }
+        .good { background: linear-gradient(135deg, #8BC34A, #7CB342); }
+        .fair { background: linear-gradient(135deg, #FFC107, #FFB300); }
+        .bad { background: linear-gradient(135deg, #FF9800, #F57C00); }
+        .horrible { background: linear-gradient(135deg, #F44336, #D32F2F); }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+            padding: 15px 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9em;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        tr:hover {
+            background-color: rgba(102, 126, 234, 0.1);
+            transform: scale(1.01);
+        }
+        
+        .data-structure {
+            text-align: left !important;
+            font-weight: bold;
+            color: #2c3e50;
+            background: linear-gradient(90deg, #f8f9fa, #e9ecef);
+            border-left: 4px solid #667eea;
+        }
+        
+        .implementation {
+            font-style: italic;
+            font-size: 0.85em;
+            color: #666;
+        }
+        
+        .O-1 { background-color: #4CAF50; color: white; }
+        .O-logn { background-color: #8BC34A; color: white; }
+        .O-n { background-color: #FFC107; color: black; }
+        .O-nlogn { background-color: #FF9800; color: white; }
+        .O-n2 { background-color: #F44336; color: white; }
+        .O-2n { background-color: #9C27B0; color: white; }
+        
+        .section-header {
+            background: linear-gradient(135deg, #667eea, #764ba2) !important;
+            color: white !important;
+            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            table {
+                font-size: 0.8em;
+            }
+            
+            th, td {
+                padding: 8px 5px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+        
+        .notes {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .notes h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        
+        .notes ul {
+            color: #555;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Big O Notation Cheat Sheet</h1>
+        
+        <div class="legend">
+            <div class="legend-item excellent">O(1) Excellent</div>
+            <div class="legend-item good">O(log n) Good</div>
+            <div class="legend-item fair">O(n) Fair</div>
+            <div class="legend-item bad">O(n log n) Bad</div>
+            <div class="legend-item horrible">O(n²) Horrible</div>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 20%;">Data Structure</th>
+                    <th style="width: 10%;">Access</th>
+                    <th style="width: 10%;">Search</th>
+                    <th style="width: 10%;">Insertion</th>
+                    <th style="width: 10%;">Deletion</th>
+                    <th style="width: 15%;">Space Complexity</th>
+                    <th style="width: 25%;">Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Arrays -->
+                <tr>
+                    <td class="section-header" colspan="7">ARRAYS</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Array (Static)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td>Random access, insertion/deletion requires shifting</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Dynamic Array<br><span class="implementation">(ArrayList, Vector)</span></td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-1">O(1)*</td>
+                    <td class="O-1">O(1)*</td>
+                    <td class="O-n">O(n)</td>
+                    <td>*Amortized. Worst case O(n) for resize</td>
+                </tr>
+                
+                <!-- Linked Lists -->
+                <tr>
+                    <td class="section-header" colspan="7">LINKED LISTS</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Singly Linked List</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-n">O(n)</td>
+                    <td>Insert/delete at head is O(1)</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Doubly Linked List</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-n">O(n)</td>
+                    <td>Can traverse backwards, insert/delete at ends O(1)</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Circular Linked List</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-n">O(n)</td>
+                    <td>Last node points to first node</td>
+                </tr>
+                
+                <!-- Stacks & Queues -->
+                <tr>
+                    <td class="section-header" colspan="7">STACKS & QUEUES</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Stack<br><span class="implementation">(Array-based)</span></td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-n">O(n)</td>
+                    <td>LIFO - Last In, First Out</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Queue<br><span class="implementation">(Array-based)</span></td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-n">O(n)</td>
+                    <td>FIFO - First In, First Out</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Deque<br><span class="implementation">(Double-ended Queue)</span></td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-n">O(n)</td>
+                    <td>Insert/delete at both ends</td>
+                </tr>
+                
+                <!-- Trees -->
+                <tr>
+                    <td class="section-header" colspan="7">TREES</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Binary Search Tree<br><span class="implementation">(Average Case)</span></td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td>Balanced tree performance</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Binary Search Tree<br><span class="implementation">(Worst Case)</span></td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td>Degenerate tree (like linked list)</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">AVL Tree</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td>Self-balancing, height difference ≤ 1</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Red-Black Tree</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td>Self-balancing, used in many libraries</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">B-Tree</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td>Optimized for disk access, used in databases</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Splay Tree</td>
+                    <td class="O-logn">O(log n)*</td>
+                    <td class="O-logn">O(log n)*</td>
+                    <td class="O-logn">O(log n)*</td>
+                    <td class="O-logn">O(log n)*</td>
+                    <td class="O-n">O(n)</td>
+                    <td>*Amortized. Recently accessed elements faster</td>
+                </tr>
+                
+                <!-- Heaps -->
+                <tr>
+                    <td class="section-header" colspan="7">HEAPS</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Binary Heap<br><span class="implementation">(Min/Max Heap)</span></td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td>Find min/max in O(1), extract in O(log n)</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Binomial Heap</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td>Merge operation in O(log n)</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Fibonacci Heap</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-logn">O(log n)*</td>
+                    <td class="O-n">O(n)</td>
+                    <td>*Amortized. Excellent for decrease-key ops</td>
+                </tr>
+                
+                <!-- Hash Tables -->
+                <tr>
+                    <td class="section-header" colspan="7">HASH TABLES</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Hash Table<br><span class="implementation">(Average Case)</span></td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-n">O(n)</td>
+                    <td>Good hash function, low load factor</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Hash Table<br><span class="implementation">(Worst Case)</span></td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td>All keys hash to same bucket</td>
+                </tr>
+                
+                <!-- Graphs -->
+                <tr>
+                    <td class="section-header" colspan="7">GRAPHS</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Adjacency List</td>
+                    <td class="O-n">O(V)</td>
+                    <td class="O-n">O(V)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-n">O(V)</td>
+                    <td class="O-n">O(V+E)</td>
+                    <td>V = vertices, E = edges. Space efficient</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Adjacency Matrix</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-1">O(1)</td>
+                    <td class="O-n2">O(V²)</td>
+                    <td>Fast edge lookup, memory intensive</td>
+                </tr>
+                
+                <!-- Specialized Structures -->
+                <tr>
+                    <td class="section-header" colspan="7">SPECIALIZED STRUCTURES</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Trie (Prefix Tree)</td>
+                    <td class="O-n">O(m)</td>
+                    <td class="O-n">O(m)</td>
+                    <td class="O-n">O(m)</td>
+                    <td class="O-n">O(m)</td>
+                    <td class="O-n">O(ALPHABET_SIZE × N × M)</td>
+                    <td>m = key length. Excellent for prefix searches</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Segment Tree</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-n">O(4n)</td>
+                    <td>Range queries and updates</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Fenwick Tree<br><span class="implementation">(Binary Indexed Tree)</span></td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td>Prefix sum queries, more space efficient</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Disjoint Set<br><span class="implementation">(Union-Find)</span></td>
+                    <td class="O-1">O(α(n))</td>
+                    <td class="O-1">O(α(n))</td>
+                    <td class="O-1">O(α(n))</td>
+                    <td class="O-1">N/A</td>
+                    <td class="O-n">O(n)</td>
+                    <td>α(n) is inverse Ackermann, practically O(1)</td>
+                </tr>
+                <tr>
+                    <td class="data-structure">Skip List</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-logn">O(log n)</td>
+                    <td class="O-n">O(n)</td>
+                    <td>Probabilistic data structure, simpler than trees</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="notes">
+            <h3>📝 Important Notes:</h3>
+            <ul>
+                <li><strong>Average vs Worst Case:</strong> Many structures show different performance under different conditions</li>
+                <li><strong>Amortized Analysis:</strong> Some operations may be expensive occasionally but cheap on average</li>
+                <li><strong>Space Complexity:</strong> Often there's a trade-off between time and space efficiency</li>
+                <li><strong>Implementation Details:</strong> Real-world performance can vary based on specific implementation choices</li>
+                <li><strong>Cache Performance:</strong> Arrays often perform better in practice due to better cache locality</li>
+                <li><strong>Load Factor:</strong> Hash table performance heavily depends on maintaining a good load factor</li>
+                <li><strong>Balancing:</strong> Self-balancing trees guarantee O(log n) performance but have overhead</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
