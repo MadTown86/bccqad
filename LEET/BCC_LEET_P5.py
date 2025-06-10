@@ -92,15 +92,6 @@ class MyAttempt3:
 
         return max_s
 
-        
-            
-
-
-
-
-
-
-        
 class TheirSolution1:
     """
     Expand Around Center
@@ -139,6 +130,30 @@ class TheirSolution2:
                         Max_Len = i-j+1
                         Max_Str = s[j:i+1]
         return Max_Str
+    
+class OneToComment:
+    def longestPalindrome3(self, s: str) -> str:
+        """Manacher's Algorithm"""
+        if len(s) <= 1:
+            return s
+        
+        Max_Len=1 # Using this to store the longest palindrome, only increased when larger found
+        Max_Str=s[0] # Setting Max_Str as first index char
+        dp = [[False for _ in range(len(s))] for _ in range(len(s))] # Making a matrix of Falses.
+        for i in range(len(s)): # linear loop to last index
+            dp[i][i] = True  # setting 'x/y' position for individual characters to True
+            for j in range(i): # A loop for back checking (aka - each step forward allows you to re-check all of them )
+                if s[j] == s[i] and (i-j <= 2 or dp[j+1][i-1]): # If the characters equal and 
+                    # The characters are less than or equal to 2 index positions away from each other
+                    # I didn't fully think of what makes a palindrome a palindrome.  I missed that any equal characters with one character
+                    # Sandwiched between is also a palindrome.  My mind stopped at side by side.
+                    
+                    dp[j][i] = True # - so if you have something like 'ata', 'aa' it marks the position on the matrix as true
+                    if i-j+1 > Max_Len: # - subtract the indexes and add one to find the 'len' and update Max_Len
+                        Max_Len = i-j+1 # Update the max length
+                        Max_Str = s[j:i+1] # Update the string equivalent via slicing
+        return Max_Str
+
 
 
 if __name__ == "__main__":
