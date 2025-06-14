@@ -94,14 +94,14 @@ class Solution:
     
 class Solution2:
     """
-    Beats 40% - Time Complexity
-    Beats 90% - Memory Complexity
+    Beats 40% - Time Complexity O(n)
+    Beats 90% - Memory Complexity O(n)
     """
     def convert(self, s: str, numRows: int) -> str:
-        res = [[] for x in range(numRows)]
-        u = len(s)
+        res = [[] for _ in range(numRows)]
+        l = len(s)
 
-        if u <= numRows or numRows == 1:
+        if l <= numRows or numRows == 1:
             return s 
         
         sp = 0 if numRows < 3 else numRows - 2
@@ -111,7 +111,7 @@ class Solution2:
         sl = sp
         f = True
         x = 0
-        while x < u:
+        while x < l:
             if f and rc < numRows:
                 res[rc].append(s[x])
                 rc += 1
@@ -160,6 +160,11 @@ if __name__ == "__main__":
     # ("PAYPALISHIRING", 3), ("PAYPALISHIRING", 4), ("A", 5), ("AB", 1), ("ABC", 2),
     inputs = [("PAYPALISHIRING", 3), ("PAYPALISHIRING", 4), ("A", 5), ("AB", 1), ("ABC", 2), ("PAYPALISHIRING", 7)]
 
-    for question in inputs:
-        print(S.convert(*question))
+    for number, question  in enumerate(inputs):
+        if number == 1:
+            assert(S.convert(*question) == "PAHNAPLSIIGYIR")
+        elif number == 2:
+            assert(S.convert(*question) == "PINALSIGYAHRPI")
+        else:
+            print(S.convert(*question))
                 
