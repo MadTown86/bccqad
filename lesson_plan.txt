@@ -22,7 +22,7 @@ a grading algorithm.  I'll use Tkinter like this, loop through the symbols like 
 
 For me, I was interested in investing in the stock market, so I built a program that
 would help me with the market research required to make educated investment decisions.  Now that I am at home and do most of the
-grocery shopping, I want to build an application that scrapes local grocery store websites for price by unit information so IDE
+grocery shopping, I want to build an application that scrapes local grocery store websites for price by unit information so I
 can see which places have the best prices for which products.
 
 
@@ -70,6 +70,10 @@ Episode 28: BCC28 - Intermediate Python Tutorial - BST (Binary Search Tree) - In
 Episode 29: BCC29 - Intermediate Python Tutorial - Positionally Linked List (Because I wanted To)
 Episode 30: BCC30 - Intermediate Python Tutorial - Heaps not Peeps YUCK!
 Episode ##: BCC## - Intermediate Python Tutorial - Memory Management and B-Trees
+
+MODULE COVERAGE:
+BCC - PYTHON MODULE 1 - re - because it is confusing AS FUDGESOUP
+
 
 
 Going Forward Recommendation:

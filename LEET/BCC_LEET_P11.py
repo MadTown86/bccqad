@@ -20,6 +20,7 @@ class Solution:
             calc = min(h[x], h[y]) * (y - x)
             if calc > highest:
                 highest = calc
+            
             if h[x] > h[y]:
                 y -= 1
             else:

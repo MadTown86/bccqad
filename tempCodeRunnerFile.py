@@ -1,1 +1,1 @@
-        bin_digits = bin(num)[2:]
+w
