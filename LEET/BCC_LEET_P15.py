@@ -7,50 +7,98 @@ from typing import List
 
 class Solution:
     def threeSum(self, nums: List[int]) -> List[List[int]]:
-        x, y, z = 0, 1, 2
+
+        """
+        The last one to be incremented leads the loop and becomes the 'base closing condition'
+        """
+        res = []
+        if not nums:
+            return []
+        
+        for x in range(len(nums)):
+            for y in range(x+1, len(nums)):
+                for z in range(y+1, len(nums)):
+                    if nums[x] + nums[y] + nums[z] == 0:
+                        temp = [nums[x], nums[y], nums[z]]
+                        if temp not in res:
+                            res.append(temp)
+        return res
+
+class Solution2:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        x, y, z = 0, 1, len(nums)-1
         res = []
         nums.sort()
 
-        calc = lambda x, y, z: nums[x] + nums[y] + nums[z] == 0
-        add = lambda x, y, z: nums[x] + nums[y] + nums[z]
+        for x in range(len(nums)):
+            if x > 0 and nums[x] == nums[x-1]:
+                continue
 
-        if len(nums) == 3:
-            if calc(x, y, z):
-                return [nums]
-            else:
-                return []
-            
-        while x < len(nums)-2:
-            if y >= len(nums) and z > len(nums):
-                x += 1
-                y = x + 1
-                z = y + 1
-                continue
-            if z >= len(nums):
-                y += 1
-                z = y + 1
-                continue
-            elif calc(x, y, z):
+            y = x + 1
+            z = len(nums)-1
+
+            while y < z:
+                s = nums[x] + nums[y] + nums[z]
                 temp = [nums[x], nums[y], nums[z]]
-                if temp not in res:
-                    res.append([nums[x], nums[y], nums[z]])
-                    z += 1
-                else:
-                    z += 1
-            elif add(x, y, z) < 0 and z < len(nums):
-                z += 1
-            else:
-                x += 1
-                y = x + 1
-                z = y + 1
 
-        return res
+                if s > 0:
+                    z -= 1
+                elif s < 0:
+                    y += 1
+                else:
+                    res.append(temp)
+                    y += 1
+
+                    while nums[y] == nums[y+1] and y < z:
+                        y += 1
+
+            return res
+
 
         
+        
+        
+class Solution3:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        res = []
+        nums.sort()
+
+        for i in range(len(nums)):
+            if i > 0 and nums[i] == nums[i-1]:
+                continue
+            
+            j = i + 1
+            k = len(nums) - 1
+
+            while j < k:
+                total = nums[i] + nums[j] + nums[k]
+
+                if total > 0:
+                    k -= 1
+                elif total < 0:
+                    j += 1
+                else:
+                    res.append([nums[i], nums[j], nums[k]])
+                    j += 1
+
+                    while nums[j] == nums[j-1] and j < k:
+                        j += 1
+        
+        return res
+
 
 if __name__ == "__main__":
-    S = Solution()
-    ans = [[[-10,5,5],[-5,0,5],[-4,2,2],[-3,-2,5],[-3,1,2],[-2,0,2]]]
-    inputs = [[2,-3,0,-2,-5,-5,-4,1,2,-2,2,0,2,-4,5,5,-10],[-2, 0, 1, 1, 2], [0, 0, 0, 0], [-1, 0, 1, 2, -1, -4], [0, 1, 1], [0, 0, 0]]
+    S = Solution3()
+    try:
+        with open('C:\\PYREPOS\\bccqad\\LEET\\BCC_LEET_P15_input.txt', 'r') as r:
+            text = r.read()
+            text = eval(text)
+    except Exception as e:
+        print(e)
+    
+    ans = [[-10,5,5],[-5,0,5],[-4,2,2],[-3,-2,5],[-3,1,2],[-2,0,2], ]
+    inputs = [[-2,-3,0,0,-2],[-4,-2, 1], [-1,0,1,2,-1,-4,-2,-3,3,0,4], [-1, 0, 1], [2,-3,0,-2,-5,-5,-4,1,2,-2,2,0,2,-4,5,5,-10], [-2, 0, 1, 1, 2], [0, 0, 0, 0], [-1, 0, 1, 2, -1, -4], [0, 1, 1], [0, 0, 0]]
     for inp in inputs:
         print(S.threeSum(inp))
+
+    print(S.threeSum(text))
