@@ -23,7 +23,6 @@ class Solution:
                         if temp not in res:
                             res.append(temp)
         return res
-
 class Solution2:
     def threeSum(self, nums: List[int]) -> List[List[int]]:
         x, y, z = 0, 1, len(nums)-1
@@ -52,24 +51,22 @@ class Solution2:
                     while nums[y] == nums[y+1] and y < z:
                         y += 1
 
-            return res
-
-
+            return res    
         
-        
-        
-class Solution3:
+class TheirSolution:
     def threeSum(self, nums: List[int]) -> List[List[int]]:
         res = []
         nums.sort()
 
         for i in range(len(nums)):
+            # skips duplicate values at nums[i]
             if i > 0 and nums[i] == nums[i-1]:
                 continue
             
             j = i + 1
             k = len(nums) - 1
 
+            # continue looping while j != k
             while j < k:
                 total = nums[i] + nums[j] + nums[k]
 
@@ -81,6 +78,7 @@ class Solution3:
                     res.append([nums[i], nums[j], nums[k]])
                     j += 1
 
+                    #skip duplicate values at nums[j]
                     while nums[j] == nums[j-1] and j < k:
                         j += 1
         
@@ -88,7 +86,7 @@ class Solution3:
 
 
 if __name__ == "__main__":
-    S = Solution3()
+    S = TheirSolution()
     try:
         with open('C:\\PYREPOS\\bccqad\\LEET\\BCC_LEET_P15_input.txt', 'r') as r:
             text = r.read()
@@ -97,8 +95,7 @@ if __name__ == "__main__":
         print(e)
     
     ans = [[-10,5,5],[-5,0,5],[-4,2,2],[-3,-2,5],[-3,1,2],[-2,0,2], ]
-    inputs = [[-2,-3,0,0,-2],[-4,-2, 1], [-1,0,1,2,-1,-4,-2,-3,3,0,4], [-1, 0, 1], [2,-3,0,-2,-5,-5,-4,1,2,-2,2,0,2,-4,5,5,-10], [-2, 0, 1, 1, 2], [0, 0, 0, 0], [-1, 0, 1, 2, -1, -4], [0, 1, 1], [0, 0, 0]]
+    inputs = [[-1,0,1,2,-1,-4,-2,-3,3,0,4], [-2,-3,0,0,-2],[-4,-2, 1],[-1, 0, 1], [2,-3,0,-2,-5,-5,-4,1,2,-2,2,0,2,-4,5,5,-10], [-2, 0, 1, 1, 2], [0, 0, 0, 0], [-1, 0, 1, 2, -1, -4], [0, 1, 1], [0, 0, 0]]
     for inp in inputs:
         print(S.threeSum(inp))
 
-    print(S.threeSum(text))
