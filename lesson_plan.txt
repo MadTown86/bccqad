@@ -73,6 +73,13 @@ Episode ##: BCC## - Intermediate Python Tutorial - Memory Management and B-Trees
 
 MODULE COVERAGE:
 BCC - PYTHON MODULE 1 - re - because it is confusing AS FUDGESOUP
+BCC - PYTHON MODULE 2 - itertools
+BCC - PYTHON MODULE 3 - Tkinter 1 - Basic Setup and App Creation
+BCC - PYTHON MODULE 4 - Tkinter 2 - User Input
+BCC - PYTHON MOUDLE 5 - Tkinter 3 - Tabs and More Advanced Features
+BCC - PYTHON MODULE 6 - Numpy
+BCC - PYTHON MODULE 7 - Pandas
+BCC - PYTHON MODULE 8 - Collections - Default Dict / Deque
 
 
 
